@@ -1,12 +1,9 @@
 ec2instancespricing.py
 ======================
 
-Written by Eran Sandler (@erans)
-
-http://eran.sandler.co.il
-
+Written by Eran Sandler (@erans)    
+http://eran.sandler.co.il    
 http://forecastcloudy.net (@forecastcloudy)
-
 
 ec2instancespricing.py is a quick & dirty library and a command line interface (CLI)
 to get a list of all Amazon Web Services EC2 instances pricing including On-Demand
@@ -29,8 +26,8 @@ get_ec2_reserved_instaces_prices - to get the pricing of reserved instances (in 
 Running this file will activate its CLI interface in which you can get output to your console 
 in a CSV, JSON and table formats (default is table).
 
-To run the command line interface, you need to install:
-argparse     - if you are running Python < 2.7
+To run the command line interface, you need to install:    
+argparse     - if you are running Python < 2.7    
 prettytable  - to get a nice table output to your console
 
 Both of these libraries can be installed using the 'pip install' command.
