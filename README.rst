@@ -2,8 +2,11 @@ ec2instancespricing.py
 ======================
 
 Written by Eran Sandler (@erans)
+
 http://eran.sandler.co.il
+
 http://forecastcloudy.net (@forecastcloudy)
+
 
 ec2instancespricing.py is a quick & dirty library and a command line interface (CLI)
 to get a list of all Amazon Web Services EC2 instances pricing including On-Demand
