@@ -113,6 +113,7 @@ INSTANCE_TYPE_MAPPING = {
 	"hiCPUODI" : "c1",
 	"clusterComputeI" : "cc1",
 	"clusterGPUI" : "cc2",
+	"hiIoODI" : "hi1",
 
 	# Reserved Instance Types
 	"stdResI" : "m1",
@@ -120,7 +121,8 @@ INSTANCE_TYPE_MAPPING = {
 	"hiMemResI" : "m2",
 	"hiCPUResI" : "c1",
 	"clusterCompResI" : "cc1",
-	"clusterGPUResI" : "cc2"
+	"clusterGPUResI" : "cc2",
+	"hiIoResI" : "hi1"
 }
 
 INSTANCE_SIZE_MAPPING = {
@@ -344,23 +346,40 @@ if __name__ == "__main__":
 		x = PrettyTable()
 
 		if args.type == "ondemand":
-			x.set_field_names(["region", "type", "os", "price"])
-			x.aligns[-1] = "l"
+			try:			
+				x.set_field_names(["region", "type", "os", "price"])
+			except AttributeError:
+				x.field_names = ["region", "type", "os", "price"]
+
+			try:
+				x.aligns[-1] = "l"
+			except AttributeError:
+				x.align["price"] = "l"
+
 			for r in data["regions"]:
 				region_name = r["region"]
 				for it in r["instanceTypes"]:
 					x.add_row([region_name, it["type"], it["os"], none_as_string(it["price"])])
 		elif args.type == "reserved":
-			x.set_field_names(["region", "type", "os", "utilization", "term", "price", "upfront"])
-			x.aligns[-1] = "l"
-			x.aligns[-2] = "l"
+			try:
+				x.set_field_names(["region", "type", "os", "utilization", "term", "price", "upfront"])
+			except AttributeError:
+				x.field_names = ["region", "type", "os", "utilization", "term", "price", "upfront"]
+
+			try:
+				x.aligns[-1] = "l"
+				x.aligns[-2] = "l"
+			except AttributeError:
+				x.align["price"] = "l"
+				x.align["upfront"] = "l"
+			
 			for r in data["regions"]:
 				region_name = r["region"]
 				for it in r["instanceTypes"]:
 					for term in it["prices"]:
 						x.add_row([region_name, it["type"], it["os"], it["utilization"], term, none_as_string(it["prices"][term]["hourly"]), none_as_string(it["prices"][term]["upfront"])])
 
-		x.printt()
+		print x
 	elif args.format == "csv":
 		if args.type == "ondemand":
 			print "region,type,os,price"
