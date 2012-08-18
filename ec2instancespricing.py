@@ -140,10 +140,12 @@ def _load_data(url):
 	f = urllib2.urlopen(url)
 	return json.loads(f.read())
 
-def get_ec2_reserved_instaces_prices(filter_region=None, filter_instance_type=None, filter_os_type=None):
+def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=None, filter_os_type=None):
 	""" Get EC2 reserved instances prices. Results can be filtered by region """
 
 	get_specific_region = (filter_region is not None)
+	if get_specific_region:
+		filter_region = EC2_REGIONS_API_TO_JSON_NAME[filter_region]
 	get_specific_instance_type = (filter_instance_type is not None)
 	get_specific_os_type = (filter_os_type is not None)
 
@@ -177,7 +179,7 @@ def get_ec2_reserved_instaces_prices(filter_region=None, filter_instance_type=No
 					if get_specific_region and filter_region != r["region"]:
 						continue
 
-				region_name = r["region"]
+				region_name = JSON_NAME_TO_EC2_REGIONS_API[r["region"]]
 				if region_name in result_regions_index:
 					instance_types = result_regions_index[region_name]["instanceTypes"]
 				else:
@@ -338,7 +340,7 @@ if __name__ == "__main__":
 	if args.type == "ondemand":
 		data = get_ec2_ondemand_instances_prices(args.filter_region, args.filter_type, args.filter_os_type)
 	elif args.type == "reserved":
-		data = get_ec2_reserved_instaces_prices(args.filter_region, args.filter_type, args.filter_os_type)
+		data = get_ec2_reserved_instances_prices(args.filter_region, args.filter_type, args.filter_os_type)
 
 	if args.format == "json":
 		print json.dumps(data)
