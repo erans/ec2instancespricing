@@ -140,7 +140,7 @@ def _load_data(url):
 	f = urllib2.urlopen(url)
 	return json.loads(f.read())
 
-def get_ec2_reserved_instaces_prices(filter_region=None, filter_instance_type=None, filter_os_type=None):
+def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=None, filter_os_type=None):
 	""" Get EC2 reserved instances prices. Results can be filtered by region """
 
 	get_specific_region = (filter_region is not None)
@@ -340,7 +340,7 @@ if __name__ == "__main__":
 	if args.type == "ondemand":
 		data = get_ec2_ondemand_instances_prices(args.filter_region, args.filter_type, args.filter_os_type)
 	elif args.type == "reserved":
-		data = get_ec2_reserved_instaces_prices(args.filter_region, args.filter_type, args.filter_os_type)
+		data = get_ec2_reserved_instances_prices(args.filter_region, args.filter_type, args.filter_os_type)
 
 	if args.format == "json":
 		print json.dumps(data)
