@@ -60,11 +60,16 @@ EC2_OS_TYPES = [
 
 JSON_NAME_TO_EC2_REGIONS_API = {
 	"us-east" : "us-east-1",
+	"us-east-1" : "us-east-1", 
 	"us-west" : "us-west-1", 
+	"us-west-1" : "us-west-1", 
 	"us-west-2" : "us-west-2", 
 	"eu-ireland" : "eu-west-1", 
+	"eu-west-1" : "eu-west-1",
 	"apac-sin" : "ap-southeast-1", 
+	"ap-southeast-1" : "ap-southeast-1",
 	"apac-tokyo" : "ap-northeast-1", 
+	"ap-northeast-1" : "ap-northeast-1",
 	"sa-east-1" : "sa-east-1"
 }
 
