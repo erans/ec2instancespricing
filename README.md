@@ -35,7 +35,8 @@ Both of these libraries can be installed using the 'pip install' command.
 ec2instancespricing.php
 ======================
 
-Adapted by Sathvik P ([@sathvikp](https://github.com/sathvikp)) for Doers' Guild ([@DoersGuild](https://github.com/DoersGuild))
+Adapted by Sathvik P ([@sathvikp](https://github.com/sathvikp)) for Doers' Guild ([@DoersGuild](https://github.com/DoersGuild))   
+
 http://www.doersguild.com
 
 This contains a class named `EC2InstancePrices` which exposes the following methods:
