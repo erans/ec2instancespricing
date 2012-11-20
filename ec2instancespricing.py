@@ -51,7 +51,7 @@ EC2_INSTANCE_TYPES = [
 	"c1.medium",
 	"c1.xlarge",
 	"cc1.4xlarge",
-	"cc2.4xlarge",
+	"cc2.8xlarge",
 	"cg1.4xlarge",
 	"m3.xlarge",
 	"m3.2xlarge"
