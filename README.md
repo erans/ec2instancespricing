@@ -31,3 +31,16 @@ argparse     - if you are running Python < 2.7
 prettytable  - to get a nice table output to your console
 
 Both of these libraries can be installed using the 'pip install' command.
+
+ec2instancespricing.php
+======================
+
+Adapted by Sathvik P ([@sathvikp](https://github.com/sathvikp)) for Doers' Guild ([@DoersGuild](https://github.com/DoersGuild))   
+http://www.doersguild.com
+
+This contains a class named `EC2InstancePrices` which exposes the following methods:
+ - `get_ec2_ondemand_instances_prices` - to get the pricing of On-Demand instances
+ - `get_ec2_reserved_instaces_prices` - to get the pricing of reserved instances (in all utilization levels)
+ - `get_ec2_data` - to print out both the on-demand and reserved instance data as `JSON`
+ 
+It currently doesn't have a Command-Line-Interface
