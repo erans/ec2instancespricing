@@ -1,4 +1,16 @@
 <?php
+/**
+ * EC2 
+ * 
+ * The EC2 class exposes the 'get_ec2_reserved_instances_prices' and the 'get_ec2_ondemand_instances_prices' methods
+ * which return the price data from Amazom AWS in an easy to use format
+ * 
+ * It also exposes the 'get_ec2_data' method which prints out the modified-data as JSON
+ * 
+ * @author Sathvik P, Doers' Guild
+ * Based on the python version by Eran Sandler
+ *
+ */
 class EC2 {
 	private $EC2_REGIONS = array("us-east-1", "us-west-1", "us-west-2", "eu-west-1", "ap-southeast-1", "ap-southeast-2", "ap-northeast-1", "sa-east-1");
 	private $EC2_INSTANCE_TYPES = array("t1.micro", "m1.small", "m1.medium", "m1.large", "m1.xlarge", "m2.xlarge", "m2.2xlarge", "m3.xlarge", "m3.2xlarge", "m2.4xlarge", "c1.medium", "c1.xlarge", "cc1.4xlarge", "cc2.4xlarge", "cg1.4xlarge");
@@ -213,6 +225,6 @@ class EC2 {
  echo "\n<br/>=================================================\n<br/>";
  print_r($ec2 -> get_ec2_ondemand_instances_prices());
  echo "\n<br/>=================================================\n<br/>";
- $ec2 -> get_ec2_data();
+ //$ec2 -> get_ec2_data();
  */
 ?>
