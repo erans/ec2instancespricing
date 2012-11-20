@@ -1,13 +1,13 @@
 <?php
 class EC2 {
-	private $EC2_REGIONS = array("us-east-1", "us-west-1", "us-west-2", "eu-west-1", "ap-southeast-1", "ap-northeast-1", "sa-east-1");
-	private $EC2_INSTANCE_TYPES = array("t1.micro", "m1.small", "m1.medium", "m1.large", "m1.xlarge", "m2.xlarge", "m2.2xlarge", "m3.xlarge", "m3.2xlarge", "m2.4xlarge", "c1.medium", "c1.xlarge", "cc1.4xlarge", "cc2.5xlarge");
+	private $EC2_REGIONS = array("us-east-1", "us-west-1", "us-west-2", "eu-west-1", "ap-southeast-1", "ap-southeast-2", "ap-northeast-1", "sa-east-1");
+	private $EC2_INSTANCE_TYPES = array("t1.micro", "m1.small", "m1.medium", "m1.large", "m1.xlarge", "m2.xlarge", "m2.2xlarge", "m3.xlarge", "m3.2xlarge", "m2.4xlarge", "c1.medium", "c1.xlarge", "cc1.4xlarge", "cc2.4xlarge", "cg1.4xlarge");
 
 	private $EC2_OS_TYPES = array("linux", "mswin");
 
 	private $JSON_NAME_TO_EC2_REGIONS_API = array("us-east" => "us-east-1", "us-east-1" => "us-east-1", "us-west" => "us-west-1", "us-west-1" => "us-west-1", "us-west-2" => "us-west-2", "eu-ireland" => "eu-west-1", "eu-west-1" => "eu-west-1", "apac-sin" => "ap-southeast-1", "ap-southeast-1" => "ap-southeast-1", "ap-southeast-2" => "ap-southeast-2", "apac-syd" => "ap-southeast-2", "apac-tokyo" => "ap-northeast-1", "ap-northeast-1" => "ap-northeast-1", "sa-east-1" => "sa-east-1");
 
-	private $EC2_REGIONS_API_TO_JSON_NAME = array("us-east-1" => "US East (Northern Virginia)", "us-west-2" => "US West (Oregon) Region", "us-west-1" => "US West (Northern California)", "eu-west-1" => "EU (Ireland)", "ap-southeast-1" => "Asia Pacific (Singapore)", "ap-southeast-2" => "Asia Pacific (Sydney)", "ap-northeast-1" => "Asia Pacific (Tokyo)", "sa-east-1" => "South America (Sao Paulo)");
+	private $EC2_REGIONS_API_TO_JSON_NAME = array("us-east-1" => "us-east", "us-west-1" => "us-west", "us-west-2" => "us-west-2", "eu-west-1" => "eu-ireland", "ap-southeast-1" => "apac-sin", "ap-southeast-2" => "apac-syd", "ap-northeast-1" => "apac-tokyo", "sa-east-1" => "sa-east-1");
 
 	private $INSTANCES_ON_DEMAND_URL = "http://aws.amazon.com/ec2/pricing/pricing-on-demand-instances.json";
 	private $INSTANCES_RESERVED_LIGHT_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/ri-light-linux.json";

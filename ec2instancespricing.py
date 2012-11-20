@@ -34,6 +34,7 @@ EC2_REGIONS = [
 	"us-west-2", 
 	"eu-west-1", 
 	"ap-southeast-1", 
+	"ap-southeast-2", 
 	"ap-northeast-1", 
 	"sa-east-1"
 ]
@@ -50,7 +51,10 @@ EC2_INSTANCE_TYPES = [
 	"c1.medium",
 	"c1.xlarge",
 	"cc1.4xlarge",
-	"cc2.5xlarge"
+	"cc2.4xlarge",
+	"cg1.4xlarge",
+	"m3.xlarge",
+	"m3.2xlarge"
 ]
 
 EC2_OS_TYPES = [
@@ -68,6 +72,8 @@ JSON_NAME_TO_EC2_REGIONS_API = {
 	"eu-west-1" : "eu-west-1",
 	"apac-sin" : "ap-southeast-1", 
 	"ap-southeast-1" : "ap-southeast-1",
+	"ap-southeast-2" : "ap-southeast-2", 
+	"apac-syd" : "ap-southeast-2",
 	"apac-tokyo" : "ap-northeast-1", 
 	"ap-northeast-1" : "ap-northeast-1",
 	"sa-east-1" : "sa-east-1"
@@ -79,6 +85,7 @@ EC2_REGIONS_API_TO_JSON_NAME = {
 	"us-west-2" : "us-west-2", 
 	"eu-west-1" : "eu-ireland", 
 	"ap-southeast-1" : "apac-sin", 
+	"ap-southeast-2" : "apac-syd", 
 	"ap-northeast-1" : "apac-tokyo", 
 	"sa-east-1" : "sa-east-1"	
 }
@@ -119,6 +126,7 @@ INSTANCE_TYPE_MAPPING = {
 	"clusterComputeI" : "cc1",
 	"clusterGPUI" : "cc2",
 	"hiIoODI" : "hi1",
+	"secgenstdODI" : "m3",
 
 	# Reserved Instance Types
 	"stdResI" : "m1",
@@ -126,8 +134,9 @@ INSTANCE_TYPE_MAPPING = {
 	"hiMemResI" : "m2",
 	"hiCPUResI" : "c1",
 	"clusterCompResI" : "cc1",
-	"clusterGPUResI" : "cc2",
-	"hiIoResI" : "hi1"
+	"clusterGPUResI" : "cg1",
+	"hiIoResI" : "hi1",
+	"secgenstdResI" : "m3"
 }
 
 INSTANCE_SIZE_MAPPING = {
