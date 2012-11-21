@@ -1,12 +1,12 @@
 <?php
 /**
- * EC2InstancePrices 
- * 
+ * EC2InstancePrices
+ *
  * The EC2InstancePrices class exposes the 'get_ec2_reserved_instances_prices' and the 'get_ec2_ondemand_instances_prices' methods
  * which return the price data from Amazom AWS in an easy to use format
- * 
+ *
  * It also exposes the 'get_ec2_data' method which prints out the modified-data as JSON
- * 
+ *
  * @author Sathvik P, Doers' Guild
  * Based on the python version by Eran Sandler
  *
@@ -35,7 +35,7 @@ class EC2InstancePrices {
 
 	private $DEFAULT_CURRENCY = "USD";
 
-	private $INSTANCE_TYPE_MAPPING = array("stdODI" => "m1", "uODI" => "t1", "hiMemODI" => "m2", "hiCPUODI" => "c1", "clusterComputeI" => "cc1", "clusterGPUI" => "cc2", "hiIoODI" => "hi1", "stdResI" => "m1", "uResI" => "t1", "hiMemResI" => "m2", "hiCPUResI" => "c1", "clusterCompResI" => "cc1", "clusterGPUResI" => "cg1", "hiIoResI" => "hi1", "secgenstdResI" => "m3", "secgenstdODI" => "m3");
+	private $INSTANCE_TYPE_MAPPING = array("stdODI" => "m1", "uODI" => "t1", "hiMemODI" => "m2", "hiCPUODI" => "c1", "clusterComputeI" => "cc1", "hiIoODI" => "hi1", "stdResI" => "m1", "uResI" => "t1", "hiMemResI" => "m2", "hiCPUResI" => "c1", "clusterCompResI" => "cc1", "hiIoResI" => "hi1", "clusterGPUResI" => "cg1", "clusterGPUI" => "cg1", "secgenstdResI" => "m3", "secgenstdODI" => "m3");
 
 	private $INSTANCE_SIZE_MAPPING = array("u" => "micro", "sm" => "small", "med" => "medium", "lg" => "large", "xl" => "xlarge", "xxl" => "2xlarge", "xxxxl" => "4xlarge", "xxxxxxxxl" => "8xlarge");
 
@@ -111,6 +111,10 @@ class EC2InstancePrices {
 									$prices = array("1year" => array("hourly" => NULL, "upfront" => NULL), "3year" => array("hourly" => NULL, "upfront" => NULL));
 
 									$_type = $instance_type . "." . $instance_size;
+									if ($_type == "cc1.8xlarge") {
+										//Fix conflict where cc1 and cc2 share the same type
+										$_type = "cc2.8xlarge";
+									}
 
 									if ($get_specific_instance_type and $_type != $filter_instance_type) {
 										continue;
@@ -182,6 +186,10 @@ class EC2InstancePrices {
 										$price = floatval($price_data["prices"][$currency]);
 
 										$_type = $instance_type . "." . $instance_size;
+										if ($_type == "cc1.8xlarge") {
+											//Fix conflict where cc1 and cc2 share the same type
+											$_type = "cc2.8xlarge";
+										}
 
 										if ($get_specific_instance_type and $_type != $filter_instance_type) {
 											continue;

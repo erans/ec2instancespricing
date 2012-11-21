@@ -124,7 +124,7 @@ INSTANCE_TYPE_MAPPING = {
 	"hiMemODI" : "m2",
 	"hiCPUODI" : "c1",
 	"clusterComputeI" : "cc1",
-	"clusterGPUI" : "cc2",
+	"clusterGPUI" : "cg1",
 	"hiIoODI" : "hi1",
 	"secgenstdODI" : "m3",
 
@@ -193,65 +193,68 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
 					if get_specific_region and filter_region != r["region"]:
 						continue
 
-				region_name = JSON_NAME_TO_EC2_REGIONS_API[r["region"]]
-				if region_name in result_regions_index:
-					instance_types = result_regions_index[region_name]["instanceTypes"]
-				else:
-					instance_types = []
-					result_regions.append({
-						"region" : region_name,
-						"instanceTypes" : instance_types
-					})
-					result_regions_index[region_name] = result_regions[-1]
-					
-				if "instanceTypes" in r:
-					for it in r["instanceTypes"]:
-						instance_type = INSTANCE_TYPE_MAPPING[it["type"]]
-						if "sizes" in it:
-							for s in it["sizes"]:
-								instance_size = INSTANCE_SIZE_MAPPING[s["size"]]
-
-								prices = {
-									"1year" : {
-										"hourly" : None,
-										"upfront" : None
-									},
-									"3year" : {
-										"hourly" : None,
-										"upfront" : None
+					region_name = JSON_NAME_TO_EC2_REGIONS_API[r["region"]]
+					if region_name in result_regions_index:
+						instance_types = result_regions_index[region_name]["instanceTypes"]
+					else:
+						instance_types = []
+						result_regions.append({
+							"region" : region_name,
+							"instanceTypes" : instance_types
+						})
+						result_regions_index[region_name] = result_regions[-1]
+						
+					if "instanceTypes" in r:
+						for it in r["instanceTypes"]:
+							instance_type = INSTANCE_TYPE_MAPPING[it["type"]]
+							if "sizes" in it:
+								for s in it["sizes"]:
+									instance_size = INSTANCE_SIZE_MAPPING[s["size"]]
+	
+									prices = {
+										"1year" : {
+											"hourly" : None,
+											"upfront" : None
+										},
+										"3year" : {
+											"hourly" : None,
+											"upfront" : None
+										}
 									}
-								}
-
-								_type = "%s.%s" % (instance_type, instance_size)
-
-								if get_specific_instance_type and _type != filter_instance_type:
-									continue
-
-								if get_specific_os_type and os_type != filter_os_type:
-									continue
-
-								instance_types.append({
-									"type" : _type,
-									"os" : os_type,
-									"utilization" : utilization_type,
-									"prices" : prices
-								})
-
-								for price_data in s["valueColumns"]:
-									price = None
-									try:
-										price = float(price_data["prices"][currency])
-									except ValueError:
+	
+									_type = "%s.%s" % (instance_type, instance_size)
+									if _type=="cc1.8xlarge":
+										# Fix conflict where cc1 and cc2 share the same type
+										_type = "cc2.8xlarge"
+	
+									if get_specific_instance_type and _type != filter_instance_type:
+										continue
+	
+									if get_specific_os_type and os_type != filter_os_type:
+										continue
+	
+									instance_types.append({
+										"type" : _type,
+										"os" : os_type,
+										"utilization" : utilization_type,
+										"prices" : prices
+									})
+	
+									for price_data in s["valueColumns"]:
 										price = None
-
-									if price_data["name"] == "yrTerm1":
-										prices["1year"]["upfront"] = price
-									elif price_data["name"] == "yrTerm1Hourly":
-										prices["1year"]["hourly"] = price
-									elif price_data["name"] == "yrTerm3":
-										prices["3year"]["upfront"] = price
-									elif price_data["name"] == "yrTerm3Hourly":
-										prices["3year"]["hourly"] = price			
+										try:
+											price = float(price_data["prices"][currency])
+										except ValueError:
+											price = None
+	
+										if price_data["name"] == "yrTerm1":
+											prices["1year"]["upfront"] = price
+										elif price_data["name"] == "yrTerm1Hourly":
+											prices["1year"]["hourly"] = price
+										elif price_data["name"] == "yrTerm3":
+											prices["3year"]["upfront"] = price
+										elif price_data["name"] == "yrTerm3Hourly":
+											prices["3year"]["hourly"] = price			
 
 	return result
 
@@ -300,6 +303,9 @@ def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=N
 										price = None
 
 									_type = "%s.%s" % (instance_type, instance_size)
+									if _type=="cc1.8xlarge":
+										# Fix conflict where cc1 and cc2 share the same type
+										_type = "cc2.8xlarge"
 
 									if get_specific_instance_type and _type != filter_instance_type:
 										continue
