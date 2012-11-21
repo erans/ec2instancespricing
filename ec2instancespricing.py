@@ -29,13 +29,13 @@ except ImportError:
 	import json
 
 EC2_REGIONS = [
-	"us-east-1", 
-	"us-west-1", 
-	"us-west-2", 
-	"eu-west-1", 
-	"ap-southeast-1", 
-	"ap-southeast-2", 
-	"ap-northeast-1", 
+	"us-east-1",
+	"us-west-1",
+	"us-west-2",
+	"eu-west-1",
+	"ap-southeast-1",
+	"ap-southeast-2",
+	"ap-northeast-1",
 	"sa-east-1"
 ]
 
@@ -64,29 +64,29 @@ EC2_OS_TYPES = [
 
 JSON_NAME_TO_EC2_REGIONS_API = {
 	"us-east" : "us-east-1",
-	"us-east-1" : "us-east-1", 
-	"us-west" : "us-west-1", 
-	"us-west-1" : "us-west-1", 
-	"us-west-2" : "us-west-2", 
-	"eu-ireland" : "eu-west-1", 
+	"us-east-1" : "us-east-1",
+	"us-west" : "us-west-1",
+	"us-west-1" : "us-west-1",
+	"us-west-2" : "us-west-2",
+	"eu-ireland" : "eu-west-1",
 	"eu-west-1" : "eu-west-1",
-	"apac-sin" : "ap-southeast-1", 
+	"apac-sin" : "ap-southeast-1",
 	"ap-southeast-1" : "ap-southeast-1",
-	"ap-southeast-2" : "ap-southeast-2", 
+	"ap-southeast-2" : "ap-southeast-2",
 	"apac-syd" : "ap-southeast-2",
-	"apac-tokyo" : "ap-northeast-1", 
+	"apac-tokyo" : "ap-northeast-1",
 	"ap-northeast-1" : "ap-northeast-1",
 	"sa-east-1" : "sa-east-1"
 }
 
 EC2_REGIONS_API_TO_JSON_NAME = {
-	"us-east-1" : "us-east", 
-	"us-west-1" : "us-west", 
-	"us-west-2" : "us-west-2", 
-	"eu-west-1" : "eu-ireland", 
-	"ap-southeast-1" : "apac-sin", 
-	"ap-southeast-2" : "apac-syd", 
-	"ap-northeast-1" : "apac-tokyo", 
+	"us-east-1" : "us-east",
+	"us-west-1" : "us-west",
+	"us-west-2" : "us-west-2",
+	"eu-west-1" : "eu-ireland",
+	"ap-southeast-1" : "apac-sin",
+	"ap-southeast-2" : "apac-syd",
+	"ap-northeast-1" : "apac-tokyo",
 	"sa-east-1" : "sa-east-1"	
 }
 
@@ -100,7 +100,7 @@ INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/pr
 
 INSTANCES_RESERVED_OS_TYPE_BY_URL = {
 	INSTANCES_RESERVED_LIGHT_UTILIZATION_LINUX_URL : "linux",
-	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL : "mswin", 
+	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL : "mswin",
 	INSTNACES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL : "linux",
 	INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL : "mswin",
 	INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL : "linux",
@@ -109,7 +109,7 @@ INSTANCES_RESERVED_OS_TYPE_BY_URL = {
 
 INSTANCES_RESERVED_UTILIZATION_TYPE_BY_URL = {
 	INSTANCES_RESERVED_LIGHT_UTILIZATION_LINUX_URL : "light",
-	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL : "light", 
+	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL : "light",
 	INSTNACES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL : "medium",
 	INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL : "medium",
 	INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL : "heavy",
@@ -223,7 +223,7 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
 									}
 	
 									_type = "%s.%s" % (instance_type, instance_size)
-									if _type=="cc1.8xlarge":
+									if _type == "cc1.8xlarge":
 										# Fix conflict where cc1 and cc2 share the same type
 										_type = "cc2.8xlarge"
 	
@@ -303,7 +303,7 @@ def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=N
 										price = None
 
 									_type = "%s.%s" % (instance_type, instance_size)
-									if _type=="cc1.8xlarge":
+									if _type == "cc1.8xlarge":
 										# Fix conflict where cc1 and cc2 share the same type
 										_type = "cc2.8xlarge"
 
