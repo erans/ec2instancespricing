@@ -55,7 +55,8 @@ EC2_INSTANCE_TYPES = [
 	"cg1.4xlarge",
 	"m3.xlarge",
 	"m3.2xlarge",
-	"hi1.4xlarge"
+	"hi1.4xlarge",
+	"hs1.8xlarge"
 ]
 
 EC2_OS_TYPES = [
@@ -128,6 +129,7 @@ INSTANCE_TYPE_MAPPING = {
 	"clusterGPUI" : "cg1",
 	"hiIoODI" : "hi1",
 	"secgenstdODI" : "m3",
+	"hiStoreODI": "hs1",
 
 	# Reserved Instance Types
 	"stdResI" : "m1",
@@ -137,7 +139,8 @@ INSTANCE_TYPE_MAPPING = {
 	"clusterCompResI" : "cc1",
 	"clusterGPUResI" : "cg1",
 	"hiIoResI" : "hi1",
-	"secgenstdResI" : "m3"
+	"secgenstdResI" : "m3",
+	"hiStoreResI": "hs1"
 }
 
 INSTANCE_SIZE_MAPPING = {
