@@ -130,6 +130,7 @@ INSTANCE_TYPE_MAPPING = {
 	"hiIoODI" : "hi1",
 	"secgenstdODI" : "m3",
 	"hiStoreODI": "hs1",
+	"clusterHiMemODI": "cr1",
 
 	# Reserved Instance Types
 	"stdResI" : "m1",
@@ -140,7 +141,8 @@ INSTANCE_TYPE_MAPPING = {
 	"clusterGPUResI" : "cg1",
 	"hiIoResI" : "hi1",
 	"secgenstdResI" : "m3",
-	"hiStoreResI": "hs1"
+	"hiStoreResI": "hs1",
+	"clusterHiMemResI": "cr1"
 }
 
 INSTANCE_SIZE_MAPPING = {
