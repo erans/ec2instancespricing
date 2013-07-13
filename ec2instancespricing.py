@@ -61,8 +61,12 @@ EC2_INSTANCE_TYPES = [
 ]
 
 EC2_OS_TYPES = [
-	"linux",
-	"mswin"
+	"linux",       # api platform name = "linux"
+	"mswin",       # api platform name = "windows"
+	"rhel",        # api platform name = ""
+	"sles",        # api platform name = ""
+	"mswinSQL",    # api platform name = "windows"
+	"mswinSQLWeb", # api platform name = "windows"
 ]
 
 JSON_NAME_TO_EC2_REGIONS_API = {
@@ -93,30 +97,81 @@ EC2_REGIONS_API_TO_JSON_NAME = {
 	"sa-east-1" : "sa-east-1"	
 }
 
-INSTANCES_ON_DEMAND_URL = "http://aws.amazon.com/ec2/pricing/pricing-on-demand-instances.json"
-INSTANCES_RESERVED_LIGHT_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/ri-light-linux.json"
-INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/pricing/ri-light-mswin.json"
-INSTNACES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/ri-medium-linux.json"
-INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/pricing/ri-medium-mswin.json"
-INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/ri-heavy-linux.json"
-INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/pricing/ri-heavy-mswin.json"
+INSTANCES_ON_DEMAND_LINUX_URL = "http://aws.amazon.com/ec2/pricing/json/linux-od.json"
+INSTANCES_ON_DEMAND_RHEL_URL = "http://aws.amazon.com/ec2/pricing/json/rhel-od.json"
+INSTANCES_ON_DEMAND_SLES_URL = "http://aws.amazon.com/ec2/pricing/json/sles-od.json"
+INSTANCES_ON_DEMAND_WINDOWS_URL = "http://aws.amazon.com/ec2/pricing/json/mswin-od.json"
+INSTANCES_ON_DEMAND_WINSQL_URL = "http://aws.amazon.com/ec2/pricing/json/mswinSQL-od.json"
+INSTANCES_ON_DEMAND_WINSQLWEB_URL = "http://aws.amazon.com/ec2/pricing/json/mswinSQLWeb-od.json"
+INSTANCES_RESERVED_LIGHT_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/json/linux-ri-light.json"
+INSTANCES_RESERVED_LIGHT_UTILIZATION_RHEL_URL = "http://aws.amazon.com/ec2/pricing/json/rhel-ri-light.json"
+INSTANCES_RESERVED_LIGHT_UTILIZATION_SLES_URL = "http://aws.amazon.com/ec2/pricing/json/sles-ri-light.json"
+INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/pricing/json/mswin-ri-light.json"
+INSTANCES_RESERVED_LIGHT_UTILIZATION_WINSQL_URL = "http://aws.amazon.com/ec2/pricing/json/mswinSQL-ri-light.json"
+INSTANCES_RESERVED_LIGHT_UTILIZATION_WINSQLWEB_URL = "http://aws.amazon.com/ec2/pricing/json/mswinSQLWeb-ri-light.json"
+INSTNACES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/json/linux-ri-medium.json"
+INSTANCES_RESERVED_MEDIUM_UTILIZATION_RHEL_URL = "http://aws.amazon.com/ec2/pricing/json/rhel-ri-medium.json"
+INSTANCES_RESERVED_MEDIUM_UTILIZATION_SLES_URL = "http://aws.amazon.com/ec2/pricing/json/sles-ri-medium.json"
+INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/pricing/json/mswin-ri-medium.json"
+INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINSQL_URL = "http://aws.amazon.com/ec2/pricing/json/mswinSQL-ri-medium.json"
+INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINSQLWEB_URL = "http://aws.amazon.com/ec2/pricing/json/mswinSQLWeb-ri-medium.json"
+INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/json/linux-ri-heavy.json"
+INSTNACES_RESERVED_HEAVY_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/json/linux-ri-heavy.json"
+INSTANCES_RESERVED_HEAVY_UTILIZATION_RHEL_URL = "http://aws.amazon.com/ec2/pricing/json/rhel-ri-heavy.json"
+INSTANCES_RESERVED_HEAVY_UTILIZATION_SLES_URL = "http://aws.amazon.com/ec2/pricing/json/sles-ri-heavy.json"
+INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/pricing/json/mswin-ri-heavy.json"
+INSTANCES_RESERVED_HEAVY_UTILIZATION_WINSQL_URL = "http://aws.amazon.com/ec2/pricing/json/mswinSQL-ri-heavy.json"
+INSTANCES_RESERVED_HEAVY_UTILIZATION_WINSQLWEB_URL = "http://aws.amazon.com/ec2/pricing/json/mswinSQLWeb-ri-heavy.json"
+
+INSTANCES_ONDEMAND_OS_TYPE_BY_URL = {
+	INSTANCES_ON_DEMAND_LINUX_URL : "linux",
+	INSTANCES_ON_DEMAND_RHEL_URL : "rhel",
+	INSTANCES_ON_DEMAND_SLES_URL : "sles",
+	INSTANCES_ON_DEMAND_WINDOWS_URL : "mswin",
+	INSTANCES_ON_DEMAND_WINSQL_URL : "mswinSQL",
+	INSTANCES_ON_DEMAND_WINSQLWEB_URL : "mswinSQLWeb",
+}
 
 INSTANCES_RESERVED_OS_TYPE_BY_URL = {
 	INSTANCES_RESERVED_LIGHT_UTILIZATION_LINUX_URL : "linux",
-	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL : "mswin",
+	INSTANCES_RESERVED_LIGHT_UTILIZATION_RHEL_URL : "rhel",
+	INSTANCES_RESERVED_LIGHT_UTILIZATION_SLES_URL : "sles",
+	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL :  "mswin",
+	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINSQL_URL : "mswinSQL",
+	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINSQLWEB_URL : "mswinSQLWeb",
 	INSTNACES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL : "linux",
-	INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL : "mswin",
+	INSTANCES_RESERVED_MEDIUM_UTILIZATION_RHEL_URL : "rhel",
+	INSTANCES_RESERVED_MEDIUM_UTILIZATION_SLES_URL : "sles",
+	INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL :  "mswin",
+	INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINSQL_URL : "mswinSQL",
+	INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINSQLWEB_URL : "mswinSQLWeb",
 	INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL : "linux",
-	INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL  : "mswin"
+	INSTANCES_RESERVED_HEAVY_UTILIZATION_RHEL_URL : "rhel",
+	INSTANCES_RESERVED_HEAVY_UTILIZATION_SLES_URL : "sles",
+	INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL :  "mswin",
+	INSTANCES_RESERVED_HEAVY_UTILIZATION_WINSQL_URL : "mswinSQL",
+	INSTANCES_RESERVED_HEAVY_UTILIZATION_WINSQLWEB_URL : "mswinSQLWeb",
 }
 
 INSTANCES_RESERVED_UTILIZATION_TYPE_BY_URL = {
 	INSTANCES_RESERVED_LIGHT_UTILIZATION_LINUX_URL : "light",
+	INSTANCES_RESERVED_LIGHT_UTILIZATION_RHEL_URL : "light",
+	INSTANCES_RESERVED_LIGHT_UTILIZATION_SLES_URL : "light",
 	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL : "light",
+	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINSQL_URL : "light",
+	INSTANCES_RESERVED_LIGHT_UTILIZATION_WINSQLWEB_URL : "light",
 	INSTNACES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL : "medium",
+	INSTANCES_RESERVED_MEDIUM_UTILIZATION_RHEL_URL : "medium",
+	INSTANCES_RESERVED_MEDIUM_UTILIZATION_SLES_URL : "medium",
 	INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL : "medium",
+	INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINSQL_URL : "medium",
+	INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINSQLWEB_URL : "medium",	
 	INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL : "heavy",
-	INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL  : "heavy"	
+	INSTANCES_RESERVED_HEAVY_UTILIZATION_RHEL_URL : "heavy",
+	INSTANCES_RESERVED_HEAVY_UTILIZATION_SLES_URL : "heavy",
+	INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL : "heavy",
+	INSTANCES_RESERVED_HEAVY_UTILIZATION_WINSQL_URL : "heavy",
+	INSTANCES_RESERVED_HEAVY_UTILIZATION_WINSQLWEB_URL : "heavy",	
 }
 
 DEFAULT_CURRENCY = "USD"
@@ -174,11 +229,24 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
 
 	urls = [
 		INSTANCES_RESERVED_LIGHT_UTILIZATION_LINUX_URL,
+		INSTANCES_RESERVED_LIGHT_UTILIZATION_RHEL_URL,
+		INSTANCES_RESERVED_LIGHT_UTILIZATION_SLES_URL,
 		INSTANCES_RESERVED_LIGHT_UTILIZATION_WINDOWS_URL,
+		INSTANCES_RESERVED_LIGHT_UTILIZATION_WINSQL_URL,
+		INSTANCES_RESERVED_LIGHT_UTILIZATION_WINSQLWEB_URL,
 		INSTNACES_RESERVED_MEDIUM_UTILIZATION_LINUX_URL,
+		INSTANCES_RESERVED_MEDIUM_UTILIZATION_RHEL_URL,
+		INSTANCES_RESERVED_MEDIUM_UTILIZATION_SLES_URL,
 		INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL,
+		INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINSQL_URL,
+		INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINSQLWEB_URL,
 		INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL,
-		INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL 
+		INSTNACES_RESERVED_HEAVY_UTILIZATION_LINUX_URL,
+		INSTANCES_RESERVED_HEAVY_UTILIZATION_RHEL_URL,
+		INSTANCES_RESERVED_HEAVY_UTILIZATION_SLES_URL,
+		INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL,
+		INSTANCES_RESERVED_HEAVY_UTILIZATION_WINSQL_URL,
+		INSTANCES_RESERVED_HEAVY_UTILIZATION_WINSQLWEB_URL,
 	]
 
 	result_regions = []
@@ -192,6 +260,8 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
 
 	for u in urls:
 		os_type = INSTANCES_RESERVED_OS_TYPE_BY_URL[u]
+		if get_specific_os_type and os_type != filter_os_type:
+			continue
 		utilization_type = INSTANCES_RESERVED_UTILIZATION_TYPE_BY_URL[u]
 		data = _load_data(u)
 		if "config" in data and data["config"] and "regions" in data["config"] and data["config"]["regions"]:
@@ -276,6 +346,15 @@ def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=N
 	get_specific_os_type = (filter_os_type is not None)
 
 	currency = DEFAULT_CURRENCY
+	
+	urls = [
+		INSTANCES_ON_DEMAND_LINUX_URL,
+		INSTANCES_ON_DEMAND_RHEL_URL,
+		INSTANCES_ON_DEMAND_SLES_URL,
+		INSTANCES_ON_DEMAND_WINDOWS_URL,
+		INSTANCES_ON_DEMAND_WINSQL_URL,
+		INSTANCES_ON_DEMAND_WINSQLWEB_URL		
+	]
 
 	result_regions = []
 	result = {
@@ -286,54 +365,56 @@ def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=N
 		"regions" : result_regions
 	}
 
-	data = _load_data(INSTANCES_ON_DEMAND_URL)
-	if "config" in data and data["config"] and "regions" in data["config"] and data["config"]["regions"]:
-		for r in data["config"]["regions"]:
-			if "region" in r and r["region"]:
-				if get_specific_region and filter_region != r["region"]:
-					continue
-
-				region_name = JSON_NAME_TO_EC2_REGIONS_API[r["region"]]
-				instance_types = []
-				if "instanceTypes" in r:
-					for it in r["instanceTypes"]:
-						instance_type = INSTANCE_TYPE_MAPPING[it["type"]]
-						if "sizes" in it:
-							for s in it["sizes"]:
-								instance_size = INSTANCE_SIZE_MAPPING[s["size"]]
-
-								for price_data in s["valueColumns"]:
-									price = None
-									try:
-										price = float(price_data["prices"][currency])
-									except ValueError:
+	for u in urls:
+		if get_specific_os_type and INSTANCES_ONDEMAND_OS_TYPE_BY_URL[u] != filter_os_type:
+			continue
+		data = _load_data(u)
+		if "config" in data and data["config"] and "regions" in data["config"] and data["config"]["regions"]:
+			for r in data["config"]["regions"]:
+				if "region" in r and r["region"]:
+					if get_specific_region and filter_region != r["region"]:
+						continue
+	
+					region_name = JSON_NAME_TO_EC2_REGIONS_API[r["region"]]
+					instance_types = []
+					if "instanceTypes" in r:
+						for it in r["instanceTypes"]:
+							instance_type = INSTANCE_TYPE_MAPPING[it["type"]]
+							if "sizes" in it:
+								for s in it["sizes"]:
+									instance_size = INSTANCE_SIZE_MAPPING[s["size"]]
+	
+									for price_data in s["valueColumns"]:
 										price = None
+										try:
+											price = float(price_data["prices"][currency])
+										except ValueError:
+											price = None
+	
+										_type = "%s.%s" % (instance_type, instance_size)
+										if _type == "cc1.8xlarge":
+											# Fix conflict where cc1 and cc2 share the same type
+											_type = "cc2.8xlarge"
+	
+										if get_specific_instance_type and _type != filter_instance_type:
+											continue
+	
+										if get_specific_os_type and price_data["name"] != filter_os_type:
+											continue
+	
+										instance_types.append({
+											"type" : _type,
+											"os" : price_data["name"],
+											"price" : price
+										})
+	
+						result_regions.append({
+							"region" : region_name,
+							"instanceTypes" : instance_types
+						})
+	
+	return result
 
-									_type = "%s.%s" % (instance_type, instance_size)
-									if _type == "cc1.8xlarge":
-										# Fix conflict where cc1 and cc2 share the same type
-										_type = "cc2.8xlarge"
-
-									if get_specific_instance_type and _type != filter_instance_type:
-										continue
-
-									if get_specific_os_type and price_data["name"] != filter_os_type:
-										continue
-
-									instance_types.append({
-										"type" : _type,
-										"os" : price_data["name"],
-										"price" : price
-									})
-
-					result_regions.append({
-						"region" : region_name,
-						"instanceTypes" : instance_types
-					})
-
-		return result
-
-	return None
 
 if __name__ == "__main__":
 	def none_as_string(v):
