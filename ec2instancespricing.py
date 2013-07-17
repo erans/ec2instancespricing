@@ -116,7 +116,6 @@ INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/p
 INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINSQL_URL = "http://aws.amazon.com/ec2/pricing/json/mswinSQL-ri-medium.json"
 INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINSQLWEB_URL = "http://aws.amazon.com/ec2/pricing/json/mswinSQLWeb-ri-medium.json"
 INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/json/linux-ri-heavy.json"
-INSTNACES_RESERVED_HEAVY_UTILIZATION_LINUX_URL = "http://aws.amazon.com/ec2/pricing/json/linux-ri-heavy.json"
 INSTANCES_RESERVED_HEAVY_UTILIZATION_RHEL_URL = "http://aws.amazon.com/ec2/pricing/json/rhel-ri-heavy.json"
 INSTANCES_RESERVED_HEAVY_UTILIZATION_SLES_URL = "http://aws.amazon.com/ec2/pricing/json/sles-ri-heavy.json"
 INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL = "http://aws.amazon.com/ec2/pricing/json/mswin-ri-heavy.json"
@@ -240,7 +239,6 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
 		INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINDOWS_URL,
 		INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINSQL_URL,
 		INSTANCES_RESERVED_MEDIUM_UTILIZATION_WINSQLWEB_URL,
-		INSTANCES_RESERVED_HEAVY_UTILIZATION_LINUX_URL,
 		INSTNACES_RESERVED_HEAVY_UTILIZATION_LINUX_URL,
 		INSTANCES_RESERVED_HEAVY_UTILIZATION_RHEL_URL,
 		INSTANCES_RESERVED_HEAVY_UTILIZATION_SLES_URL,
