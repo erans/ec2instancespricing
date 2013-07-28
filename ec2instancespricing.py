@@ -212,8 +212,15 @@ INSTANCE_SIZE_MAPPING = {
 }
 
 def _load_data(url):
-    f = urllib2.urlopen(url)
-    return json.loads(f.read())
+    # This could also be done with lru_cache, but I don't want an extra dependency
+    if not hasattr(_load_data, '_cache'):
+        _load_data._cache = dict()
+
+    if not url in _load_data._cache:
+        f = urllib2.urlopen(url)
+        _load_data._cache[url] = json.loads(f.read())
+
+    return _load_data._cache[url]
 
 def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=None, filter_os_type=None):
     """ Get EC2 reserved instances prices. Results can be filtered by region """
