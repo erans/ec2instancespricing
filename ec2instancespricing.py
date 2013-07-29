@@ -23,6 +23,7 @@
 #
 import urllib2
 import argparse
+import datetime
 try:
 	import simplejson as json
 except ImportError:
@@ -211,11 +212,82 @@ INSTANCE_SIZE_MAPPING = {
 	"xxxxxxxxl" : "8xlarge"
 }
 
-def _load_data(url):
-	f = urllib2.urlopen(url)
-	return json.loads(f.read())
+class ResultsCacheBase(object):
+	_instance = None
 
-def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=None, filter_os_type=None):
+	def __new__(cls, *args, **kwargs):
+		if not cls._instance:
+			cls._instance = super(ResultsCacheBase, cls).__new__(cls, *args, **kwargs)
+
+		return cls._instance
+
+	def get(self, key):
+		pass
+
+	def set(self, key, value):
+		pass
+
+
+class SimpleResultsCache(ResultsCacheBase):	
+	_cache = {}
+
+	def get(self, key):
+		if key in self._cache:
+			return self._cache[key]
+
+		return None
+
+	def set(self, key, value):
+		self._cache[key] = value
+
+
+class TimeBasedResultsCache(ResultsCacheBase):
+	_cache = {}
+	_cache_expiration = {}
+
+	# If you wish to chance this expiration use the following (a bit ugly) code:
+	#
+	# TimeBasedResultsCache()._default_expiration_in_seconds = 86400 # 1 day	
+	#
+	# Since all cache classes inherit from ResultsCacheBase and are singletons that should set it correctly.
+	#
+	_default_expiration_in_seconds = 3600 # 1 hour
+
+	def get(self, key):
+		if key not in self._cache or key not in self._cache_expiration:
+			return None
+
+		# If key has expired return None
+		if self._cache_expiration[key] < datetime.datetime.utcnow():
+			if key in self._cache: del self._cache[key]
+			if key in self._cache_expiration: del self._cache_expiration[key]
+
+			return None
+
+		return self._cache[key]
+
+	def set(self, key, value):
+		self._cache[key] = value
+		self._cache_expiration[key] = datetime.datetime.utcnow() + datetime.timedelta(seconds=self._default_expiration_in_seconds)
+
+
+def _load_data(url, use_cache=False, cache_class=SimpleResultsCache):
+	cache_object = None
+	if use_cache:
+		cache_object = cache_class()
+		result = cache_object.get(url)
+		if result is not None: 
+			return result
+	
+	f = urllib2.urlopen(url)
+	result = json.loads(f.read())
+
+	if use_cache:
+		cache_object.set(url, result)
+
+	return result
+
+def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=None, filter_os_type=None, use_cache=False, cache_class=SimpleResultsCache):
 	""" Get EC2 reserved instances prices. Results can be filtered by region """
 
 	get_specific_region = (filter_region is not None)
@@ -261,7 +333,7 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
 		if get_specific_os_type and os_type != filter_os_type:
 			continue
 		utilization_type = INSTANCES_RESERVED_UTILIZATION_TYPE_BY_URL[u]
-		data = _load_data(u)
+		data = _load_data(u, cache=use_cache, cache_class=cache_class)
 		if "config" in data and data["config"] and "regions" in data["config"] and data["config"]["regions"]:
 			for r in data["config"]["regions"]:
 				if "region" in r and r["region"]:
@@ -333,7 +405,7 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
 
 	return result
 
-def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=None, filter_os_type=None):
+def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=None, filter_os_type=None, use_cache=False, cache_class=SimpleResultsCache):
 	""" Get EC2 on-demand instances prices. Results can be filtered by region """
 
 	get_specific_region = (filter_region is not None)
@@ -366,7 +438,8 @@ def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=N
 	for u in urls:
 		if get_specific_os_type and INSTANCES_ONDEMAND_OS_TYPE_BY_URL[u] != filter_os_type:
 			continue
-		data = _load_data(u)
+
+		data = _load_data(u, use_cache=use_cache, cache_class=cache_class)
 		if "config" in data and data["config"] and "regions" in data["config"] and data["config"]["regions"]:
 			for r in data["config"]["regions"]:
 				if "region" in r and r["region"]:
