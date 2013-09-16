@@ -333,7 +333,7 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
 		if get_specific_os_type and os_type != filter_os_type:
 			continue
 		utilization_type = INSTANCES_RESERVED_UTILIZATION_TYPE_BY_URL[u]
-		data = _load_data(u, cache=use_cache, cache_class=cache_class)
+		data = _load_data(u, use_cache=use_cache, cache_class=cache_class)
 		if "config" in data and data["config"] and "regions" in data["config"] and data["config"]["regions"]:
 			for r in data["config"]["regions"]:
 				if "region" in r and r["region"]:
