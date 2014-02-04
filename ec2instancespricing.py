@@ -58,7 +58,8 @@ EC2_INSTANCE_TYPES = [
     "m3.xlarge",
     "m3.2xlarge",
     "hi1.4xlarge",
-    "hs1.8xlarge"
+    "hs1.8xlarge",
+    "g2.2xlarge"
 ]
 
 EC2_OS_TYPES = [
