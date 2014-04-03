@@ -49,17 +49,30 @@ EC2_INSTANCE_TYPES = [
     "m2.xlarge",
     "m2.2xlarge",
     "m2.4xlarge",
+    "m3.medium",
+    "m3.large",
+    "m3.xlarge",
+    "m3.2xlarge",
     "c1.medium",
     "c1.xlarge",
-    "cc1.4xlarge",
+    "c3.xlarge",
+    "c3.2xlarge",
+    "c3.4xlarge",
+    "c3.8xlarge",
     "cc2.8xlarge",
     "cg1.4xlarge",
     "cr1.8xlarge",
-    "m3.xlarge",
-    "m3.2xlarge",
     "hi1.4xlarge",
     "hs1.8xlarge",
-    "g2.2xlarge"
+    "g2.2xlarge",
+    "r3.large",
+    "r3.xlarge",
+    "r3.2xlarge",
+    "r3.4xlarge",
+    "r3.8xlarge",
+    "i2.xlarge",
+    "i2.4xlarge",
+    "i2.8xlarge",
 ]
 
 EC2_OS_TYPES = [
@@ -177,41 +190,6 @@ INSTANCES_RESERVED_UTILIZATION_TYPE_BY_URL = {
 
 DEFAULT_CURRENCY = "USD"
 
-INSTANCE_TYPE_MAPPING = {
-    "stdODI" : "m1",
-    "uODI" : "t1",
-    "hiMemODI" : "m2",
-    "hiCPUODI" : "c1",
-    "clusterComputeI" : "cc1",
-    "clusterGPUI" : "cg1",
-    "hiIoODI" : "hi1",
-    "secgenstdODI" : "m3",
-    "hiStoreODI": "hs1",
-    "clusterHiMemODI": "cr1",
-
-    # Reserved Instance Types
-    "stdResI" : "m1",
-    "uResI" : "t1",
-    "hiMemResI" : "m2",
-    "hiCPUResI" : "c1",
-    "clusterCompResI" : "cc1",
-    "clusterGPUResI" : "cg1",
-    "hiIoResI" : "hi1",
-    "secgenstdResI" : "m3",
-    "hiStoreResI": "hs1",
-    "clusterHiMemResI": "cr1"
-}
-
-INSTANCE_SIZE_MAPPING = {
-    "u" : "micro",
-    "sm" : "small",
-    "med" : "medium",
-    "lg" : "large",
-    "xl" : "xlarge",
-    "xxl" : "2xlarge",
-    "xxxxl" : "4xlarge",
-    "xxxxxxxxl" : "8xlarge"
-}
 
 class ResultsCacheBase(object):
     _instance = None
@@ -375,6 +353,10 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
                                         # Fix conflict where cc1 and cc2 share the same type
                                         _type = "cc2.8xlarge"
 
+                                    # Clean the "*" the appears in the r3 instance
+                                    if _type.find("*") > -1:
+                                        _type = _type.replace("*", "").strip()
+
                                     if get_specific_instance_type and _type != filter_instance_type:
                                         continue
 
@@ -459,7 +441,8 @@ def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=N
                                     for price_data in s["valueColumns"]:
                                         price = None
                                         try:
-                                            price = float(price_data["prices"][currency])
+                                            if price_data["prices"][currency]:
+                                                price = float(price_data["prices"][currency])
                                         except ValueError:
                                             price = None
 
@@ -467,6 +450,10 @@ def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=N
                                         if _type == "cc1.8xlarge":
                                             # Fix conflict where cc1 and cc2 share the same type
                                             _type = "cc2.8xlarge"
+
+                                        # Clean the "*" the appears in the r3 instance
+                                        if _type.find("*") > -1:
+                                            _type = _type.replace("*", "").strip()
 
                                         if get_specific_instance_type and _type != filter_instance_type:
                                             continue
