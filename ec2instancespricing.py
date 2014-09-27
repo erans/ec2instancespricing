@@ -270,8 +270,6 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
     """ Get EC2 reserved instances prices. Results can be filtered by region """
 
     get_specific_region = (filter_region is not None)
-    if get_specific_region:
-        filter_region = EC2_REGIONS_API_TO_JSON_NAME[filter_region]
     get_specific_instance_type = (filter_instance_type is not None)
     get_specific_os_type = (filter_os_type is not None)
 
@@ -457,6 +455,9 @@ def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=N
 
                                         if get_specific_instance_type and _type != filter_instance_type:
                                             continue
+
+                                        if price_data["name"] == "os":
+                                            price_data["name"] = "linux"
 
                                         if get_specific_os_type and price_data["name"] != filter_os_type:
                                             continue
