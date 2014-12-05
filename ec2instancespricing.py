@@ -102,7 +102,6 @@ JSON_NAME_TO_EC2_REGIONS_API = {
     "ap-northeast-1" : "ap-northeast-1",
     "sa-east-1" : "sa-east-1",
     "us-gov-west-1" : "us-gov-west-1"
-
 }
 
 EC2_REGIONS_API_TO_JSON_NAME = {
