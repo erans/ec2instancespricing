@@ -39,7 +39,6 @@ EC2_REGIONS = [
     "ap-southeast-2",
     "ap-northeast-1",
     "sa-east-1"
-
 ]
 
 EC2_INSTANCE_TYPES = [
