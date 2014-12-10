@@ -98,7 +98,8 @@ JSON_NAME_TO_EC2_REGIONS_API = {
     "apac-syd" : "ap-southeast-2",
     "apac-tokyo" : "ap-northeast-1",
     "ap-northeast-1" : "ap-northeast-1",
-    "sa-east-1" : "sa-east-1"
+    "sa-east-1" : "sa-east-1",
+    "us-gov-west-1" : "us-gov-west-1"
 }
 
 EC2_REGIONS_API_TO_JSON_NAME = {
@@ -110,7 +111,8 @@ EC2_REGIONS_API_TO_JSON_NAME = {
     "ap-southeast-1" : "apac-sin",
     "ap-southeast-2" : "apac-syd",
     "ap-northeast-1" : "apac-tokyo",
-    "sa-east-1" : "sa-east-1"
+    "sa-east-1" : "sa-east-1",
+    "us-gov-west-1" : "us-gov-west-1"
 }
 
 INSTANCES_ON_DEMAND_LINUX_URL = "http://aws-assets-pricing-prod.s3.amazonaws.com/pricing/ec2/linux-od.js"
