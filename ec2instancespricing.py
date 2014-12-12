@@ -521,7 +521,7 @@ if __name__ == "__main__":
         data = get_ec2_reserved_instances_prices(args.filter_region, args.filter_type, args.filter_os_type)
 
     if args.format == "json":
-        print json.dumps(data)
+        print demjson.encode(data)
     elif args.format == "table":
         x = PrettyTable()
 
