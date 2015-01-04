@@ -21,11 +21,14 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-import urllib2
+try:
+    from urllib2 import urlopen
+except ImportError:
+    from urllib.request import urlopen
 import argparse
 import datetime
 import re
-import demjson
+import json
 
 EC2_REGIONS = [
     "us-east-1",
@@ -261,20 +264,21 @@ def _load_data(url, use_cache=False, cache_class=SimpleResultsCache):
         if result is not None:
             return result
 
-    f = urllib2.urlopen(url)
+    f = urlopen(url)
     request = f.read()
 
     # strip from front of request
-    modified_request = re.sub(r'^callback\(', '', request)
+    modified_request = re.sub(b'^callback\(', b'', request)
     # strip from end of request
-    modified_request = re.sub(r'\)$', '', modified_request)
-
-    json = demjson.decode(modified_request)
+    modified_request = re.sub(b'\)$', b'', modified_request)
+    if isinstance(modified_request, bytes): # Needed for py3k JSON decoding
+        modified_request = modified_request.decode("utf8")
+    json_data = json.loads(modified_request)
 
     if use_cache:
-        cache_object.set(url, json)
+        cache_object.set(url, json_data)
 
-    return json
+    return json_data
 
 def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=None, filter_os_type=None, use_cache=False, cache_class=SimpleResultsCache):
     """ Get EC2 reserved instances prices. Results can be filtered by region """
@@ -497,9 +501,11 @@ if __name__ == "__main__":
             return v
 
     try:
+        import traceback, sys
         import argparse
     except ImportError:
-        print "ERROR: You are running Python < 2.7. Please use pip to install argparse:   pip install argparse"
+        traceback.print_exc(file=sys.stdout)
+        print("ERROR: You are running Python < 2.7. Please use pip to install argparse:   pip install argparse")
 
 
     parser = argparse.ArgumentParser(add_help=True, description="Print out the current prices of EC2 instances")
@@ -515,7 +521,7 @@ if __name__ == "__main__":
         try:
             from prettytable import PrettyTable
         except ImportError:
-            print "ERROR: Please install 'prettytable' using pip:    pip install prettytable"
+            print("ERROR: Please install 'prettytable' using pip:    pip install prettytable")
 
     data = None
     if args.type == "ondemand":
@@ -524,7 +530,7 @@ if __name__ == "__main__":
         data = get_ec2_reserved_instances_prices(args.filter_region, args.filter_type, args.filter_os_type)
 
     if args.format == "json":
-        print demjson.encode(data)
+        print(json.dumps(data))
     elif args.format == "table":
         x = PrettyTable()
 
@@ -562,18 +568,18 @@ if __name__ == "__main__":
                     for term in it["prices"]:
                         x.add_row([region_name, it["type"], it["os"], it["utilization"], term, none_as_string(it["prices"][term]["hourly"]), none_as_string(it["prices"][term]["upfront"])])
 
-        print x
+        print(x)
     elif args.format == "csv":
         if args.type == "ondemand":
-            print "region,type,os,price"
+            print("region,type,os,price")
             for r in data["regions"]:
                 region_name = r["region"]
                 for it in r["instanceTypes"]:
-                    print "%s,%s,%s,%s" % (region_name, it["type"], it["os"], none_as_string(it["price"]))
+                    print("%s,%s,%s,%s" % (region_name, it["type"], it["os"], none_as_string(it["price"])))
         elif args.type == "reserved":
-            print "region,type,os,utilization,term,price,upfront"
+            print("region,type,os,utilization,term,price,upfront")
             for r in data["regions"]:
                 region_name = r["region"]
                 for it in r["instanceTypes"]:
                     for term in it["prices"]:
-                        print "%s,%s,%s,%s,%s,%s,%s" % (region_name, it["type"], it["os"], it["utilization"], term, none_as_string(it["prices"][term]["hourly"]), none_as_string(it["prices"][term]["upfront"]))
+                        print("%s,%s,%s,%s,%s,%s,%s" % (region_name, it["type"], it["os"], it["utilization"], term, none_as_string(it["prices"][term]["hourly"]), none_as_string(it["prices"][term]["upfront"])))
