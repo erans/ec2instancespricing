@@ -269,7 +269,7 @@ def _load_data(url, use_cache=False, cache_class=SimpleResultsCache):
     # strip from front of request
     modified_request = re.sub(r'^callback\(', '', modified_request)
     # strip from end of request
-    modified_request = re.sub(r'\);$', '', modified_request)
+    modified_request = re.sub(r'\);*$', '', modified_request)
 
     json = demjson.decode(modified_request)
 
