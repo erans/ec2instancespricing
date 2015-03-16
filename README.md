@@ -29,6 +29,7 @@ in a CSV, JSON and table formats (default is table).
 To run the command line interface, you need to install:    
 argparse     - if you are running Python < 2.7    
 prettytable  - to get a nice table output to your console
+demjson      - for easier JSON parsing
 
 Both of these libraries can be installed using the 'pip install' command.
 
