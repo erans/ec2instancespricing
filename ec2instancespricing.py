@@ -24,7 +24,6 @@
 import urllib2
 import argparse
 import datetime
-import re
 import demjson
 
 EC2_REGIONS = [
@@ -288,12 +287,8 @@ def _load_data(url, use_cache=False, cache_class=SimpleResultsCache):
     f = urllib2.urlopen(url)
     request = f.read()
 
-    # strip initial comment (with newline)
-    modified_request = re.sub(re.compile(r'/\*.*\*/\n', re.DOTALL), '', request)
-    # strip from front of request
-    modified_request = re.sub(r'^callback\(', '', modified_request)
-    # strip from end of request
-    modified_request = re.sub(r'\);*$', '', modified_request)
+    # strip non JSON data from responce
+    modified_request = request.split('\n')[-1][:-2][9:]
 
     json = demjson.decode(modified_request)
 
