@@ -26,7 +26,7 @@ Importing this file will allow you to use two functions:
 * get_ec2_spot_instaces_prices - to get the pricing of spot instances
 
 Running this file will activate its CLI interface in which you can get output to your console 
-in a CSV/LINE, JSON and table formats (default is table).
+in a CSV, JSON, line and table formats (default is table).
 
 To run the command line interface, you need to install:
 
