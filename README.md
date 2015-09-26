@@ -6,8 +6,7 @@ http://eran.sandler.co.il
 http://forecastcloudy.net (@forecastcloudy)
 
 ec2instancespricing.py is a quick & dirty library and a command line interface (CLI)
-to get a list of all Amazon Web Services EC2 instances pricing including On-Demand
-and Reserved instances (in all utilization levels).
+to get a list of all Amazon Web Services EC2 instances pricing including On-Demand, Spot and Reserved instances (in all utilization levels).
 
 The data is based on a set of JSON files used in the EC2 page (http://aws.amazon.com/ec2).
 You can get a list of all available JSON files in this blog post:
