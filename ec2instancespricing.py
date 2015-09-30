@@ -36,27 +36,58 @@ EC2_REGIONS = [
     "ap-southeast-1",
     "ap-southeast-2",
     "ap-northeast-1",
-    "sa-east-1"
+    "sa-east-1",
 ]
+
+EC2_INSTANCE_TYPES_PATTERN = {
+    "t*.micro" : "t\d\.micro",
+    "t*.small" : "t\d\.small",
+    "t*.medium" : "t\d\.medium",
+    "t*.large" : "t\d\.large",
+
+    "m*.small" : "m\d\.small",
+    "m*.medium" : "m\d\.medium",
+    "m*.large" : "m\d\.large",
+    "m*.xlarge" : "m\d\.xlarge",
+    "m*.2xlarge" : "m\d\.2xlarge",
+    "m*.4xlarge" : "m\d\.4xlarge",
+    "m*.10xlarge" : "m\d\.10xlarge",
+
+    "c*.medium" : "c\d\.medium",
+    "c*.large" : "c\d\.large",
+    "c*.xlarge" : "c\d\.xlarge",
+    "c*.2xlarge" : "c\d\.2xlarge",
+    "c*.4xlarge" : "c\d\.4xlarge",
+    "c*.8xlarge" : "c\d\.8xlarge",
+}
 
 EC2_INSTANCE_TYPES = [
     "t1.micro",
-    "m1.small",
-    "m1.medium",
-    "m1.large",
-    "m1.xlarge",
-    "m2.xlarge",
-    "m2.2xlarge",
-    "m2.4xlarge",
 
     "t2.micro",
     "t2.small",
     "t2.medium",
+    "t2.large",
+
+    "m1.small",
+    "m1.medium",
+    "m1.large",
+    "m1.xlarge",
+
+    "m2.xlarge",
+    "m2.2xlarge",
+    "m2.4xlarge",
 
     "m3.medium",
     "m3.large",
     "m3.xlarge",
     "m3.2xlarge",
+
+    "m4.large",
+    "m4.xlarge",
+    "m4.2xlarge",
+    "m4.4xlarge",
+    "m4.10xlarge",
 
     "c1.medium",
     "c1.xlarge",
@@ -67,6 +98,12 @@ EC2_INSTANCE_TYPES = [
     "c3.4xlarge",
     "c3.8xlarge",
 
+    "c4.large",
+    "c4.xlarge",
+    "c4.2xlarge",
+    "c4.4xlarge",
+    "c4.8xlarge"
+
     "cc2.8xlarge",
     "cg1.4xlarge",
     "cr1.8xlarge",
@@ -74,6 +111,7 @@ EC2_INSTANCE_TYPES = [
     "hs1.8xlarge",
 
     "g2.2xlarge",
+    "g2.8xlarge",
 
     "r3.large",
     "r3.xlarge",
@@ -90,12 +128,6 @@ EC2_INSTANCE_TYPES = [
     "d2.2xlarge",
     "d2.4xlarge",
     "d2.8xlarge",
-
-    "c4.large",
-    "c4.xlarge",
-    "c4.2xlarge",
-    "c4.4xlarge",
-    "c4.8xlarge"
 ]
 
 EC2_OS_TYPES = [
@@ -123,7 +155,7 @@ JSON_NAME_TO_EC2_REGIONS_API = {
     "apac-tokyo" : "ap-northeast-1",
     "ap-northeast-1" : "ap-northeast-1",
     "sa-east-1" : "sa-east-1",
-    "us-gov-west-1" : "us-gov-west-1"
+    "us-gov-west-1" : "us-gov-west-1",
 }
 
 EC2_REGIONS_API_TO_JSON_NAME = {
@@ -136,9 +168,10 @@ EC2_REGIONS_API_TO_JSON_NAME = {
     "ap-southeast-2" : "apac-syd",
     "ap-northeast-1" : "apac-tokyo",
     "sa-east-1" : "sa-east-1",
-    "us-gov-west-1" : "us-gov-west-1"
+    "us-gov-west-1" : "us-gov-west-1",
 }
 
+INSTANCES_SPOT_INSTANCE_URL = "http://spot-price.s3.amazonaws.com/spot.js"
 INSTANCES_ON_DEMAND_LINUX_URL = "http://a0.awsstatic.com/pricing/1/ec2/linux-od.min.js"
 INSTANCES_ON_DEMAND_RHEL_URL = "http://a0.awsstatic.com/pricing/1/ec2/rhel-od.min.js"
 INSTANCES_ON_DEMAND_SLES_URL = "http://a0.awsstatic.com/pricing/1/ec2/sles-od.min.js"
@@ -302,15 +335,16 @@ def _load_data(url, use_cache=False, cache_class=SimpleResultsCache):
 
     return json
 
-def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=None, filter_os_type=None, use_cache=False, cache_class=SimpleResultsCache):
+def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=None, filter_instance_type_pattern=None, filter_os_type=None, use_cache=False, cache_class=SimpleResultsCache):
     """ Get EC2 reserved instances prices. Results can be filtered by region """
 
     get_specific_region = (filter_region is not None)
     # except for us-east-1, reserved instance JSON uses the real region names
     if get_specific_region and filter_region == 'us-east-1':
-         filter_region = EC2_REGIONS_API_TO_JSON_NAME[filter_region]
+        filter_region = EC2_REGIONS_API_TO_JSON_NAME[filter_region]
     get_specific_instance_type = (filter_instance_type is not None)
     get_specific_os_type = (filter_os_type is not None)
+    get_specific_instance_type_pattern = (filter_instance_type_pattern is not None)
 
     currency = DEFAULT_CURRENCY
 
@@ -397,6 +431,11 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
                                     if get_specific_instance_type and _type != filter_instance_type:
                                         continue
 
+                                    if get_specific_instance_type_pattern:
+                                        type_pattern_re = re.compile(EC2_INSTANCE_TYPES_PATTERN[filter_instance_type_pattern])
+                                        if type_pattern_re.match(_type) is None:
+                                            continue
+
                                     if get_specific_os_type and os_type != filter_os_type:
                                         continue
 
@@ -425,23 +464,16 @@ def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=N
 
     return result
 
-def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=None, filter_os_type=None, use_cache=False, cache_class=SimpleResultsCache):
-    """ Get EC2 on-demand instances prices. Results can be filtered by region """
-
+def get_ec2_spotordemand_instances_prices(urls,type,filter_region=None, filter_instance_type=None, filter_instance_type_pattern=None, filter_os_type=None, use_cache=False, cache_class=SimpleResultsCache):
     get_specific_region = (filter_region is not None)
+    # spot instance JSON not using the real region names
+    if type == "spot" and get_specific_region:
+        filter_region = EC2_REGIONS_API_TO_JSON_NAME[filter_region]
     get_specific_instance_type = (filter_instance_type is not None)
     get_specific_os_type = (filter_os_type is not None)
+    get_specific_instance_type_pattern = (filter_instance_type_pattern is not None)
 
     currency = DEFAULT_CURRENCY
-
-    urls = [
-        INSTANCES_ON_DEMAND_LINUX_URL,
-        INSTANCES_ON_DEMAND_RHEL_URL,
-        INSTANCES_ON_DEMAND_SLES_URL,
-        INSTANCES_ON_DEMAND_WINDOWS_URL,
-        INSTANCES_ON_DEMAND_WINSQL_URL,
-        INSTANCES_ON_DEMAND_WINSQLWEB_URL
-    ]
 
     result_regions = []
     result = {
@@ -451,9 +483,8 @@ def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=N
         },
         "regions" : result_regions
     }
-
     for u in urls:
-        if get_specific_os_type and INSTANCES_ONDEMAND_OS_TYPE_BY_URL[u] != filter_os_type:
+        if type == "ondemand" and get_specific_os_type and INSTANCES_ONDEMAND_OS_TYPE_BY_URL[u] != filter_os_type:
             continue
 
         data = _load_data(u, use_cache=use_cache, cache_class=cache_class)
@@ -492,6 +523,11 @@ def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=N
                                         if get_specific_instance_type and _type != filter_instance_type:
                                             continue
 
+                                        if get_specific_instance_type_pattern:
+                                            type_pattern_re = re.compile(EC2_INSTANCE_TYPES_PATTERN[filter_instance_type_pattern])
+                                            if type_pattern_re.match(_type) is None:
+                                                continue
+
                                         if price_data["name"] == "os":
                                             price_data["name"] = "linux"
 
@@ -501,18 +537,60 @@ def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=N
                                         instance_types.append({
                                             "type" : _type,
                                             "os" : price_data["name"],
-                                            "price" : price
+                                            "price" : price,
+                                            "prices": {
+                                                type : {
+                                                    "hourly": price,
+                                                    "upfront": none_as_string(0)
+                                                }
+                                            },
+                                            "utilization": type
                                         })
 
                         result_regions.append({
-                            "region" : region_name,
+                            "region" : JSON_NAME_TO_EC2_REGIONS_API[region_name],
                             "instanceTypes" : instance_types
                         })
 
     return result
 
+def get_ec2_ondemand_instances_prices(filter_region=None, filter_instance_type=None, filter_instance_type_pattern=None, filter_os_type=None, use_cache=False, cache_class=SimpleResultsCache):
+    """ Get EC2 on-demand instances prices. Results can be filtered by region """
+
+    urls = [
+        INSTANCES_ON_DEMAND_LINUX_URL,
+        INSTANCES_ON_DEMAND_RHEL_URL,
+        INSTANCES_ON_DEMAND_SLES_URL,
+        INSTANCES_ON_DEMAND_WINDOWS_URL,
+        INSTANCES_ON_DEMAND_WINSQL_URL,
+        INSTANCES_ON_DEMAND_WINSQLWEB_URL
+    ]
+
+    result = get_ec2_spotordemand_instances_prices(urls, "ondemand", filter_region, filter_instance_type, filter_instance_type_pattern, filter_os_type, use_cache, cache_class)
+
+    return result
+
+
+
+def get_ec2_spot_instances_prices(filter_region=None, filter_instance_type=None, filter_instance_type_pattern=None, filter_os_type=None, use_cache=False, cache_class=SimpleResultsCache):
+    """ Get EC2 spot instances prices. Results can be filtered by region """
+
+    urls = [
+        INSTANCES_SPOT_INSTANCE_URL
+    ]
+
+    result = get_ec2_spotordemand_instances_prices(urls, "spot", filter_region, filter_instance_type, filter_instance_type_pattern, filter_os_type, use_cache, cache_class)
+
+    return result
+
 
 if __name__ == "__main__":
+    def merge_instances(data, data_to_merge):
+        for region in data_to_merge["regions"]:
+            data["regions"].append(region)
+
+        return data
+
     def none_as_string(v):
         if not v:
             return ""
@@ -526,11 +604,12 @@ if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser(add_help=True, description="Print out the current prices of EC2 instances")
-    parser.add_argument("--type", "-t", help="Show ondemand or reserved instances", choices=["ondemand", "reserved"], required=True)
+    parser.add_argument("--type", "-t", help="Show ondemand, reserved, spot , spotordemand or all instances", choices=["ondemand", "reserved", "spot", "spotordemand", "all"], default="all")
     parser.add_argument("--filter-region", "-fr", help="Filter results to a specific region", choices=EC2_REGIONS, default=None)
     parser.add_argument("--filter-type", "-ft", help="Filter results to a specific instance type", choices=EC2_INSTANCE_TYPES, default=None)
-    parser.add_argument("--filter-os-type", "-fo", help="Filter results to a specific os type", choices=EC2_OS_TYPES, default=None)
-    parser.add_argument("--format", "-f", choices=["json", "table", "csv"], help="Output format", default="table")
+    parser.add_argument("--filter-type-pattern", "-fp", help="Filter results to a specific instance type pattern", choices=EC2_INSTANCE_TYPES_PATTERN, default=None)
+    parser.add_argument("--filter-os-type", "-fo", help="Filter results to a specific os type", choices=EC2_OS_TYPES, default="linux")
+    parser.add_argument("--format", "-f", choices=["json", "table", "csv", "line"], help="Output format", default="table")
 
     args = parser.parse_args()
 
@@ -540,22 +619,41 @@ if __name__ == "__main__":
         except ImportError:
             print "ERROR: Please install 'prettytable' using pip:    pip install prettytable"
 
-    data = None
+    currency = DEFAULT_CURRENCY
+
+    data_regions = []
+    data = {
+        "config" : {
+            "currency" : currency,
+            "unit" : "perhr"
+        },
+        "regions" : data_regions
+    }
+
     if args.type == "ondemand":
-        data = get_ec2_ondemand_instances_prices(args.filter_region, args.filter_type, args.filter_os_type)
+        data = get_ec2_ondemand_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type)
     elif args.type == "reserved":
-        data = get_ec2_reserved_instances_prices(args.filter_region, args.filter_type, args.filter_os_type)
+        data = get_ec2_reserved_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type)
+    elif args.type == "spot":
+        data = get_ec2_spot_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type)
+    elif args.type == "spotordemand":
+        data = merge_instances(data, get_ec2_ondemand_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
+        data = merge_instances(data, get_ec2_spot_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
+    elif args.type == "all":
+        data = merge_instances(data, get_ec2_ondemand_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
+        data = merge_instances(data, get_ec2_reserved_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
+        data = merge_instances(data, get_ec2_spot_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
 
     if args.format == "json":
         print demjson.encode(data)
     elif args.format == "table":
         x = PrettyTable()
 
-        if args.type == "ondemand":
+        if args.type == "ondemand" or args.type == "spot" or args.type == "spotordemand":
             try:
-                x.set_field_names(["region", "type", "os", "price"])
+                x.set_field_names(["region", "type", "os", "price", "utilization"])
             except AttributeError:
-                x.field_names = ["region", "type", "os", "price"]
+                x.field_names = ["region", "type", "os", "price", "utilization"]
 
             try:
                 x.aligns[-1] = "l"
@@ -565,12 +663,12 @@ if __name__ == "__main__":
             for r in data["regions"]:
                 region_name = r["region"]
                 for it in r["instanceTypes"]:
-                    x.add_row([region_name, it["type"], it["os"], none_as_string(it["price"])])
-        elif args.type == "reserved":
+                    x.add_row([region_name, it["type"], it["os"], none_as_string(it["price"]), it["utilization"]])
+        elif args.type == "reserved" or args.type == "all":
             try:
-                x.set_field_names(["region", "type", "os", "utilization", "term", "price", "upfront"])
+                x.set_field_names(["region", "type", "os", "price", "utilization", "term", "upfront"])
             except AttributeError:
-                x.field_names = ["region", "type", "os", "utilization", "term", "price", "upfront"]
+                x.field_names = ["region", "type", "os", "price", "utilization", "term", "upfront"]
 
             try:
                 x.aligns[-1] = "l"
@@ -583,20 +681,28 @@ if __name__ == "__main__":
                 region_name = r["region"]
                 for it in r["instanceTypes"]:
                     for term in it["prices"]:
-                        x.add_row([region_name, it["type"], it["os"], it["utilization"], term, none_as_string(it["prices"][term]["hourly"]), none_as_string(it["prices"][term]["upfront"])])
+                        x.add_row([region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront"])])
 
         print x
-    elif args.format == "csv":
-        if args.type == "ondemand":
-            print "region,type,os,price"
+    elif args.format == "csv" or args.format == "line":
+        if args.type == "ondemand" or args.type == "spot" or args.type == "spotordemand":
+            if args.format == "line":
+                line_format = "%s %s %s %s %s"
+            else:
+                print "region,type,os,price,utilization"
+                line_format = "%s,%s,%s,%s,%s"
             for r in data["regions"]:
                 region_name = r["region"]
                 for it in r["instanceTypes"]:
-                    print "%s,%s,%s,%s" % (region_name, it["type"], it["os"], none_as_string(it["price"]))
-        elif args.type == "reserved":
-            print "region,type,os,utilization,term,price,upfront"
+                    print line_format % (region_name, it["type"], it["os"], none_as_string(it["price"]), it["utilization"])
+        elif args.type == "reserved" or args.type == "all":
+            if args.format == "line":
+                line_format = "%s %s %s %s %s %s %s"
+            else:
+                print "region,type,os,price,utilization,term,upfront"
+                line_format = "%s,%s,%s,%s,%s,%s,%s"
             for r in data["regions"]:
                 region_name = r["region"]
                 for it in r["instanceTypes"]:
                     for term in it["prices"]:
-                        print "%s,%s,%s,%s,%s,%s,%s" % (region_name, it["type"], it["os"], it["utilization"], term, none_as_string(it["prices"][term]["hourly"]), none_as_string(it["prices"][term]["upfront"]))
+                        print line_format % (region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront"]))
