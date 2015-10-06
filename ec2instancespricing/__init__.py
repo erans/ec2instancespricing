@@ -1,0 +1,1 @@
+from ec2instancespricing.ec2instancespricing import get_prices
