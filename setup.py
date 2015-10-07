@@ -16,10 +16,20 @@ setup(
   scripts=['ec2instancespricing/ec2instancespricing.py'],
   description='Tool to get ec2 instance prices',
   author='Eran Sandler',
-  author_email='@erans',
+  author_email='eran@sandler.co.il',
   license='Other/Proprietary',
-  keywords=['ec2', 'pricing'],  # arbitrary keywords,
+  keywords=['ec2', 'pricing', 'cloud'],  # arbitrary keywords,
   url='https://github.com/erans/ec2instancespricing',
-  classifiers=[],
+  classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "Intended Audience :: System Administrators",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Topic :: System :: Systems Administration",
+        "Topic :: Utilities"
+  ],
   install_requires=[],
 )
