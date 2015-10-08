@@ -97,6 +97,33 @@ def fixup_js_literal_with_comments(in_text):
 
     return tokenize.untokenize(result)
 
+OUTPUT_PRICE_TYPES = [
+    "elb",
+    "ondemand",
+    "reserved",
+    "spot",
+    "spotordemand",
+    "all"
+]
+
+OUTPUT_FIELD_NAMES = [
+    "region",
+    "type",
+    "os",
+    "price",
+    "utilization",
+    "term",
+    "upfront",
+    "perGB"
+]
+
+OUTPUT_FORMATS = [
+    "json",
+    "table",
+    "csv",
+    "line"
+]
+
 EC2_REGIONS = [
     "us-east-1",
     "us-west-1",
@@ -242,6 +269,7 @@ EC2_REGIONS_API_TO_JSON_NAME = {
 }
 
 INSTANCES_SPOT_INSTANCE_URL = "http://spot-price.s3.amazonaws.com/spot.js"
+
 INSTANCES_ON_DEMAND_LINUX_URL = "http://a0.awsstatic.com/pricing/1/ec2/linux-od.min.js"
 INSTANCES_ON_DEMAND_RHEL_URL = "http://a0.awsstatic.com/pricing/1/ec2/rhel-od.min.js"
 INSTANCES_ON_DEMAND_SLES_URL = "http://a0.awsstatic.com/pricing/1/ec2/sles-od.min.js"
@@ -649,7 +677,7 @@ def get_ec2_spotordemand_instances_prices(urls,type,filter_region=None, filter_i
                         "os": 'elb',
                         "price": float(perELBHour["prices"][currency]),
                         "prices": {
-                            "spot": {
+                            "perGBProcessed": {
                                 "hourly": float(perELBHour["prices"][currency]),
                                 "perGB": float(GBProcessed["prices"][currency]),
                                 'upfront': '',
@@ -713,12 +741,12 @@ def _get_args(args):
         print("ERROR: You are running Python < 2.7. Please use pip to install argparse:   pip install argparse")
 
     parser = argparse.ArgumentParser(add_help=True, description="Print out the current prices of EC2 instances")
-    parser.add_argument("--type", "-t", help="Show ondemand, reserved, spot , spotordemand or all instances", choices=["ondemand", "reserved", "spot", "spotordemand", "all"], default="all")
+    parser.add_argument("--type", "-t", help="Show elb, ondemand, reserved, spot , spotordemand or all instances prices", choices=OUTPUT_PRICE_TYPES, default="all")
     parser.add_argument("--filter-region", "-fr", help="Filter results to a specific region", choices=EC2_REGIONS, default=None)
     parser.add_argument("--filter-type", "-ft", help="Filter results to a specific instance type", choices=EC2_INSTANCE_TYPES, default=None)
     parser.add_argument("--filter-type-pattern", "-fp", help="Filter results to a specific instance type pattern", choices=EC2_INSTANCE_TYPES_PATTERN, default=None)
     parser.add_argument("--filter-os-type", "-fo", help="Filter results to a specific os type", choices=EC2_OS_TYPES, default="linux")
-    parser.add_argument("--format", "-f", choices=["json", "table", "csv", "line"], help="Output format", default="table")
+    parser.add_argument("--format", "-f", choices=OUTPUT_FORMATS, help="Output format", default="table")
 
     args = parser.parse_args(args=args)
     return args
@@ -743,7 +771,7 @@ def _get_data(args):
         data = merge_instances(data, get_ec2_ondemand_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
         data = merge_instances(data, get_ec2_spot_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
     elif args.type == "elb":
-        data = merge_instances(data, get_elb_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
+        data = get_elb_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type)
     elif args.type == "all":
         data = merge_instances(data, get_ec2_ondemand_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
         data = merge_instances(data, get_ec2_reserved_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
@@ -802,61 +830,35 @@ if __name__ == "__main__":
     elif args.format == "table":
         x = PrettyTable()
 
-        if args.type == "ondemand" or args.type == "spot" or args.type == "spotordemand":
-            try:
-                x.set_field_names(["region", "type", "os", "price", "utilization"])
-            except AttributeError:
-                x.field_names = ["region", "type", "os", "price", "utilization"]
+        try:
+            x.set_field_names(OUTPUT_FIELD_NAMES)
+        except AttributeError:
+            x.field_names = OUTPUT_FIELD_NAMES
 
-            try:
-                x.aligns[-1] = "l"
-            except AttributeError:
-                x.align["price"] = "l"
+        try:
+            x.aligns[-1] = "l"
+            x.aligns[-2] = "l"
+        except AttributeError:
+            x.align["price"] = "l"
+            x.align["upfront"] = "l"
+            x.align["perGB"] = "l"
+    else:
+        x = list()
+        line_format = "%s %s %s %s %s %s %s %s"
+        if args.format == "csv":
+            print(', '.join(OUTPUT_FIELD_NAMES))
+            line_format = "%s,%s,%s,%s,%s,%s,%s,%s"
 
-            for r in data["regions"]:
-                region_name = r["region"]
-                for it in r["instanceTypes"]:
-                    x.add_row([region_name, it["type"], it["os"], none_as_string(it["price"]), it["utilization"]])
-        elif args.type == "reserved" or args.type == "all":
-            try:
-                x.set_field_names(["region", "type", "os", "price", "utilization", "term", "upfront", "perGB"])
-            except AttributeError:
-                x.field_names = ["region", "type", "os", "price", "utilization", "term", "upfront", "perGB"]
+    for r in data["regions"]:
+        region_name = r["region"]
+        for it in r["instanceTypes"]:
+            for term in it["prices"]:
+                if args.format == "csv" or args.format == "line":
+                    x.append(line_format % (region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront"]), none_as_string(it["prices"][term]["perGB"])))
+                else:
+                    x.add_row([region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront"]), none_as_string(it["prices"][term]["perGB"])])
 
-            try:
-                x.aligns[-1] = "l"
-                x.aligns[-2] = "l"
-            except AttributeError:
-                x.align["price"] = "l"
-                x.align["upfront"] = "l"
-                x.align["perGB"] = "l"
-
-            for r in data["regions"]:
-                region_name = r["region"]
-                for it in r["instanceTypes"]:
-                    for term in it["prices"]:
-                        x.add_row([region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront"]), none_as_string(it["prices"][term]["perGB"])])
-
+    if args.format == "csv" or args.format == "line":
+        print("\n".join(x))
+    else:
         print(x)
-    elif args.format == "csv" or args.format == "line":
-        if args.type == "ondemand" or args.type == "spot" or args.type == "spotordemand":
-            if args.format == "line":
-                line_format = "%s %s %s %s %s"
-            else:
-                print("region,type,os,price,utilization")
-                line_format = "%s,%s,%s,%s,%s"
-            for r in data["regions"]:
-                region_name = r["region"]
-                for it in r["instanceTypes"]:
-                    print(line_format % (region_name, it["type"], it["os"], none_as_string(it["price"]), it["utilization"]))
-        elif args.type == "reserved" or args.type == "all":
-            if args.format == "line":
-                line_format = "%s %s %s %s %s %s %s"
-            else:
-                print("region,type,os,price,utilization,term,upfront,perGB")
-                line_format = "%s,%s,%s,%s,%s,%s,%s,%s"
-            for r in data["regions"]:
-                region_name = r["region"]
-                for it in r["instanceTypes"]:
-                    for term in it["prices"]:
-                        print(line_format % (region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront"]), none_as_string(it["prices"][term]["upfront"])))
