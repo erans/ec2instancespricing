@@ -751,6 +751,8 @@ def _get_data(args):
         data = merge_instances(data, get_ec2_reserved_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
         data = merge_instances(data, get_ec2_spot_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
         data = merge_instances(data, get_elb_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
+        data = merge_instances(data, get_emr_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
+
 
     # region -> type -> utilization
     regions = dict()
