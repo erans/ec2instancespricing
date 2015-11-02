@@ -103,6 +103,7 @@ OUTPUT_PRICE_TYPES = [
     "reserved",
     "spot",
     "spotordemand",
+    "emr",
     "all"
 ]
 
@@ -293,6 +294,7 @@ INSTANCES_RESERVED_HEAVY_UTILIZATION_SLES_URL = "http://aws-assets-pricing-prod.
 INSTANCES_RESERVED_HEAVY_UTILIZATION_WINDOWS_URL = "http://aws-assets-pricing-prod.s3.amazonaws.com/pricing/ec2/mswin-ri-heavy.js"
 INSTANCES_RESERVED_HEAVY_UTILIZATION_WINSQL_URL = "http://aws-assets-pricing-prod.s3.amazonaws.com/pricing/ec2/mswinSQL-ri-heavy.js"
 INSTANCES_RESERVED_HEAVY_UTILIZATION_WINSQLWEB_URL = "http://aws-assets-pricing-prod.s3.amazonaws.com/pricing/ec2/mswinSQLWeb-ri-heavy.js"
+INSTANCES_USED_BY_EMR_URL = "http://a0.awsstatic.com/pricing/1/emr/pricing-emr.min.js"
 
 INSTANCES_ELB_URL = "http://a0.awsstatic.com/pricing/1/ec2/pricing-elb.min.js"
 
@@ -519,6 +521,29 @@ def get_ec2_instances_prices(urls, type, filter_region=None, filter_instance_typ
                             if type_pattern_re.match(_type) is None:
                                 continue
 
+                        if type == "emr":
+                            for price_data in s["valueColumns"]:
+                                if price_data[u'name'] != 'emr':
+                                    continue
+                                price = None
+                                try:
+                                    if price_data["prices"][currency]:
+                                        price = float(price_data["prices"][currency])
+                                except ValueError:
+                                    price = None
+
+                                instance_types.append({
+                                        "type": _type,
+                                        "os": 'emr',
+                                        "price": price,
+                                        "prices": {
+                                            type: {
+                                                "hourly": price,
+                                                "upfront_perGB": none_as_string(0)
+                                            }
+                                        },
+                                        "utilization": type
+                                })
                         if type == "reserved":
                             prices = {
                                 "1year": {
@@ -601,6 +626,14 @@ def get_ec2_instances_prices(urls, type, filter_region=None, filter_instance_typ
 
     return result
 
+
+def get_emr_instances_prices(filter_region=None, filter_instance_type=None, filter_instance_type_pattern=None, filter_os_type=None, use_cache=False, cache_class=SimpleResultsCache):
+    urls = [
+        INSTANCES_USED_BY_EMR_URL
+    ]
+    result = get_ec2_instances_prices(urls, "emr", filter_region, filter_instance_type, filter_instance_type_pattern, filter_os_type, use_cache, cache_class)
+
+    return result
 
 def get_ec2_reserved_instances_prices(filter_region=None, filter_instance_type=None, filter_instance_type_pattern=None, filter_os_type=None, use_cache=False, cache_class=SimpleResultsCache):
     """ Get EC2 reserved instances prices. Results can be filtered by region """
@@ -709,11 +742,17 @@ def _get_data(args):
         data = merge_instances(data, get_ec2_spot_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
     elif args.type == "elb":
         data = get_elb_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type)
+
+    elif args.type == "emr":
+        data = get_emr_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type)
+
     elif args.type == "all":
         data = merge_instances(data, get_ec2_ondemand_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
         data = merge_instances(data, get_ec2_reserved_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
         data = merge_instances(data, get_ec2_spot_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
         data = merge_instances(data, get_elb_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
+        data = merge_instances(data, get_emr_instances_prices(args.filter_region, args.filter_type, args.filter_type_pattern, args.filter_os_type))
+
 
     # region -> type -> utilization
     regions = dict()
@@ -785,16 +824,16 @@ if __name__ == "__main__":
             print(', '.join(OUTPUT_FIELD_NAMES))
             line_format = "%s,%s,%s,%s,%s,%s,%s"
 
-    for r in data["regions"]:
-        region_name = r["region"]
-        for it in r["instanceTypes"]:
-            for term in it["prices"]:
-                if args.format == "csv" or args.format == "line":
-                    x.append(line_format % (region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront_perGB"])))
-                else:
-                    x.add_row([region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront_perGB"])])
+        for r in data["regions"]:
+            region_name = r["region"]
+            for it in r["instanceTypes"]:
+                for term in it["prices"]:
+                    if args.format == "csv" or args.format == "line":
+                        x.append(line_format % (region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront_perGB"])))
+                    else:
+                        x.add_row([region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront_perGB"])])
 
-    if args.format == "csv" or args.format == "line":
-        print("\n".join(x))
-    else:
-        print(x)
+        if args.format == "csv" or args.format == "line":
+            print("\n".join(x))
+        else:
+            print(x)
