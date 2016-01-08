@@ -133,6 +133,7 @@ EC2_REGIONS = [
     "ap-southeast-1",
     "ap-southeast-2",
     "ap-northeast-1",
+    "ap-northeast-2",
     "sa-east-1",
 ]
 
@@ -250,7 +251,9 @@ JSON_NAME_TO_EC2_REGIONS_API = {
     "ap-southeast-2": "ap-southeast-2",
     "apac-syd": "ap-southeast-2",
     "apac-tokyo": "ap-northeast-1",
+    "apac-seoul": "ap-northeast-2",
     "ap-northeast-1": "ap-northeast-1",
+    "ap-northeast-2": "ap-northeast-2",
     "sa-east-1": "sa-east-1",
     "us-gov-west-1": "us-gov-west-1",
 }
@@ -264,6 +267,7 @@ EC2_REGIONS_API_TO_JSON_NAME = {
     "ap-southeast-1": "apac-sin",
     "ap-southeast-2": "apac-syd",
     "ap-northeast-1": "apac-tokyo",
+    "ap-northeast-2": "apac-seoul",
     "sa-east-1": "sa-east-1",
     "us-gov-west-1": "us-gov-west-1",
 }
