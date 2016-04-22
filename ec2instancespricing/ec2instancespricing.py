@@ -820,7 +820,6 @@ if __name__ == "__main__":
                 x.aligns[-1] = "l"
                 x.aligns[-2] = "l"
             except AttributeError:
-                print('bah')
                 x.align["price"] = "l"
                 x.align["upfront_perGB"] = "l"
         else:
