@@ -807,26 +807,28 @@ if __name__ == "__main__":
 
     if args.format == "json":
         print(json.dumps(data))
-    elif args.format == "table":
-        x = PrettyTable()
-
-        try:
-            x.set_field_names(OUTPUT_FIELD_NAMES)
-        except AttributeError:
-            x.field_names = OUTPUT_FIELD_NAMES
-
-        try:
-            x.aligns[-1] = "l"
-            x.aligns[-2] = "l"
-        except AttributeError:
-            x.align["price"] = "l"
-            x.align["upfront_perGB"] = "l"
     else:
-        x = list()
-        line_format = "%s %s %s %s %s %s %s"
-        if args.format == "csv":
-            print(', '.join(OUTPUT_FIELD_NAMES))
-            line_format = "%s,%s,%s,%s,%s,%s,%s"
+        if args.format == "table":
+            x = PrettyTable()
+
+            try:
+                x.set_field_names(OUTPUT_FIELD_NAMES)
+            except AttributeError:
+                x.field_names = OUTPUT_FIELD_NAMES
+
+            try:
+                x.aligns[-1] = "l"
+                x.aligns[-2] = "l"
+            except AttributeError:
+                print('bah')
+                x.align["price"] = "l"
+                x.align["upfront_perGB"] = "l"
+        else:
+            x = list()
+            line_format = "%s %s %s %s %s %s %s"
+            if args.format == "csv":
+                print(', '.join(OUTPUT_FIELD_NAMES))
+                line_format = "%s,%s,%s,%s,%s,%s,%s"
 
         for r in data["regions"]:
             region_name = r["region"]
