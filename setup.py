@@ -3,13 +3,9 @@ try:
 except ImportError:
     from distutils.core import setup
 
-# As a double precaution, lock this down to uploads to internal
-#from distutils import config
-#config.PyPIRCCommand.DEFAULT_REPOSITORY = 'internal'
-
 setup(
-  name='ec2instancespricing',
-  packages=[
+    name='ec2instancespricing',
+    packages=[
         'ec2instancespricing',
   ],
   version='0.1',

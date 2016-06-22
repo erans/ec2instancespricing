@@ -138,6 +138,7 @@ EC2_REGIONS = [
 ]
 
 EC2_INSTANCE_TYPES_PATTERN = {
+    "t*.nano": "t\d\.nano",
     "t*.micro": "t\d\.micro",
     "t*.small": "t\d\.small",
     "t*.medium": "t\d\.medium",
@@ -162,6 +163,7 @@ EC2_INSTANCE_TYPES_PATTERN = {
 EC2_INSTANCE_TYPES = [
     "t1.micro",
 
+    "t2.nano",
     "t2.micro",
     "t2.small",
     "t2.medium",
@@ -240,21 +242,29 @@ EC2_OS_TYPES = [
 JSON_NAME_TO_EC2_REGIONS_API = {
     "us-east": "us-east-1",
     "us-east-1": "us-east-1",
+
     "us-west": "us-west-1",
     "us-west-1": "us-west-1",
+
     "us-west-2": "us-west-2",
+
     "eu-ireland": "eu-west-1",
     "eu-west-1": "eu-west-1",
+
     "eu-central-1": "eu-central-1",
+
     "apac-sin": "ap-southeast-1",
     "ap-southeast-1": "ap-southeast-1",
+
     "ap-southeast-2": "ap-southeast-2",
     "apac-syd": "ap-southeast-2",
+
     "apac-tokyo": "ap-northeast-1",
     "apac-seoul": "ap-northeast-2",
     "ap-northeast-1": "ap-northeast-1",
     "ap-northeast-2": "ap-northeast-2",
     "sa-east-1": "sa-east-1",
+
     "us-gov-west-1": "us-gov-west-1",
 }
 
