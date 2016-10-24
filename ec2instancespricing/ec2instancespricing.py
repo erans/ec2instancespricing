@@ -126,6 +126,7 @@ OUTPUT_FORMATS = [
 
 EC2_REGIONS = [
     "us-east-1",
+    "us-east-2",
     "us-west-1",
     "us-west-2",
     "eu-west-1",
@@ -243,6 +244,7 @@ EC2_OS_TYPES = [
 JSON_NAME_TO_EC2_REGIONS_API = {
     "us-east": "us-east-1",
     "us-east-1": "us-east-1",
+    "us-east-2": "us-east-2",
 
     "us-west": "us-west-1",
     "us-west-1": "us-west-1",
@@ -274,6 +276,7 @@ JSON_NAME_TO_EC2_REGIONS_API = {
 
 EC2_REGIONS_API_TO_JSON_NAME = {
     "us-east-1": "us-east",
+    "us-east-2": "us-east-2",
     "us-west-1": "us-west",
     "us-west-2": "us-west-2",
     "eu-west-1": "eu-ireland",
