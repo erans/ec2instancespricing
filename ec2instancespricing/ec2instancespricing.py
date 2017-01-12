@@ -137,6 +137,8 @@ EC2_REGIONS = [
     "ap-northeast-2",
     "sa-east-1",
     "ap-south-1",
+    "ca-central-1",
+    "eu-west-2"
 ]
 
 EC2_INSTANCE_TYPES_PATTERN = {
@@ -230,7 +232,7 @@ EC2_INSTANCE_TYPES = [
     "d2.2xlarge",
     "d2.4xlarge",
     "d2.8xlarge",
-    
+
     "x1.32xlarge",
 ]
 
@@ -273,7 +275,8 @@ JSON_NAME_TO_EC2_REGIONS_API = {
     "us-gov-west-1": "us-gov-west-1",
 
     "ap-south-1": "ap-south-1",
-
+    "ca-central-1" : "ca-central-1",
+    "eu-west-2" : "eu-west-2"
 }
 
 EC2_REGIONS_API_TO_JSON_NAME = {
@@ -283,12 +286,14 @@ EC2_REGIONS_API_TO_JSON_NAME = {
     "us-west-2": "us-west-2",
     "eu-west-1": "eu-ireland",
     "eu-central-1": "eu-central-1",
+    "eu-west-2" : "eu-west-2",
     "ap-southeast-1": "apac-sin",
     "ap-southeast-2": "apac-syd",
     "ap-northeast-1": "apac-tokyo",
     "ap-northeast-2": "apac-seoul",
     "sa-east-1": "sa-east-1",
     "us-gov-west-1": "us-gov-west-1",
+    "ca-central-1" : "ca-central-1"
 }
 
 INSTANCES_SPOT_INSTANCE_URL = "http://spot-price.s3.amazonaws.com/spot.js"
