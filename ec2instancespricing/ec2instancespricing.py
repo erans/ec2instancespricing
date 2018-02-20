@@ -871,7 +871,7 @@ if __name__ == "__main__":
                 print(', '.join(OUTPUT_FIELD_NAMES))
                 line_format = "%s,%s,%s,%s,%s,%s,%s"
             elif args.format == "statsd":
-                line_format = "%s.%s.%s:%s|g"
+                line_format = "%s.%s.%s.%s:%s|g"
                 
 
         for r in data["regions"]:
@@ -881,7 +881,7 @@ if __name__ == "__main__":
                     if args.format == "csv" or args.format == "line":
                         x.append(line_format % (region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront_perGB"])))
                     elif args.format == "statsd":
-                        x.append(line_format % (args.statsd_prefix, sanitize_metric(region_name), sanitize_metric(it["type"]), none_as_string(it["prices"][term]["hourly"])))
+                        x.append(line_format % (args.statsd_prefix, sanitize_metric(region_name), term, sanitize_metric(it["type"]), none_as_string(it["prices"][term]["hourly"])))
                     else:
                         x.add_row([region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront_perGB"])])
 
