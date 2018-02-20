@@ -833,6 +833,9 @@ def none_as_string(v):
     else:
         return v
 
+def sanitize_metric(m):
+    return m.replace(".","_").replace("/","SLASH").replace(" ","_").replace(":","_")
+
 if __name__ == "__main__":
     args = _get_args(None)
 
@@ -878,7 +881,7 @@ if __name__ == "__main__":
                     if args.format == "csv" or args.format == "line":
                         x.append(line_format % (region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront_perGB"])))
                     elif args.format == "statsd":
-                        x.append(line_format % (args.statsd_prefix, region_name, it["type"], none_as_string(it["prices"][term]["hourly"])))
+                        x.append(line_format % (args.statsd_prefix, sanitize_metric(region_name), sanitize_metric(it["type"]), none_as_string(it["prices"][term]["hourly"])))
                     else:
                         x.add_row([region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront_perGB"])])
 
