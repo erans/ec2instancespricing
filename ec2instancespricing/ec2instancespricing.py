@@ -125,12 +125,6 @@ OUTPUT_FORMATS = [
     "statsd"
 ]
 
-STATSD_METRIC_TYPES = [
-    "g",
-    "c",
-    "s"
-]
-
 EC2_REGIONS = [
     "us-east-1",
     "us-east-2",
@@ -765,7 +759,6 @@ def _get_args(args):
     parser.add_argument("--filter-type-pattern", "-fp", help="Filter results to a specific instance type pattern", choices=EC2_INSTANCE_TYPES_PATTERN, default=None)
     parser.add_argument("--filter-os-type", "-fo", help="Filter results to a specific os type", choices=EC2_OS_TYPES, default="linux")
     parser.add_argument("--format", "-f", choices=OUTPUT_FORMATS, help="Output format", default="table")
-    parser.add_argument("--statsd-metric-type", "-smt", help="Define the metric type you want to include in the format- count, guague, etc...", choices=STATSD_METRIC_TYPES, default="g")
     parser.add_argument("--statsd-prefix", "-sp", help="Pass the prefix of the metric you want to have", default="statsd.ec2instancespricing")
 
     args = parser.parse_args(args=args)
@@ -875,7 +868,7 @@ if __name__ == "__main__":
                 print(', '.join(OUTPUT_FIELD_NAMES))
                 line_format = "%s,%s,%s,%s,%s,%s,%s"
             elif args.format == "statsd":
-                line_format = "%s.%s.%s:%s|%s"
+                line_format = "%s.%s.%s:%s|g"
                 
 
         for r in data["regions"]:
@@ -885,8 +878,7 @@ if __name__ == "__main__":
                     if args.format == "csv" or args.format == "line":
                         x.append(line_format % (region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront_perGB"])))
                     elif args.format == "statsd":
-                        print("Statsd Metric!")
-                        x.append(line_format % (args.statsd_prefix, region_name, it["type"], none_as_string(it["prices"][term]["hourly"]), args.statsd_metric_type))
+                        x.append(line_format % (args.statsd_prefix, region_name, it["type"], none_as_string(it["prices"][term]["hourly"])))
                     else:
                         x.add_row([region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront_perGB"])])
 
