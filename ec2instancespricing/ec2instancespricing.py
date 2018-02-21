@@ -759,7 +759,7 @@ def _get_args(args):
     parser.add_argument("--filter-type-pattern", "-fp", help="Filter results to a specific instance type pattern", choices=EC2_INSTANCE_TYPES_PATTERN, default=None)
     parser.add_argument("--filter-os-type", "-fo", help="Filter results to a specific os type", choices=EC2_OS_TYPES, default="linux")
     parser.add_argument("--format", "-f", choices=OUTPUT_FORMATS, help="Output format", default="table")
-    parser.add_argument("--statsd-prefix", "-sp", help="Pass the prefix of the metric you want to have", default="statsd.ec2instancespricing")
+    parser.add_argument("--statsd-prefix", "-sp", help="Pass the prefix of the metric you want to have (Only for statsd output format)", default="statsd.ec2instancespricing.hourly")
 
     args = parser.parse_args(args=args)
     return args
