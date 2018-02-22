@@ -121,7 +121,8 @@ OUTPUT_FORMATS = [
     "json",
     "table",
     "csv",
-    "line"
+    "line",
+    "statsd"
 ]
 
 EC2_REGIONS = [
@@ -758,6 +759,7 @@ def _get_args(args):
     parser.add_argument("--filter-type-pattern", "-fp", help="Filter results to a specific instance type pattern", choices=EC2_INSTANCE_TYPES_PATTERN, default=None)
     parser.add_argument("--filter-os-type", "-fo", help="Filter results to a specific os type", choices=EC2_OS_TYPES, default="linux")
     parser.add_argument("--format", "-f", choices=OUTPUT_FORMATS, help="Output format", default="table")
+    parser.add_argument("--statsd-prefix", "-sp", help="Pass the prefix of the metric you want to have (Only for statsd output format)", default="statsd.ec2instancespricing.hourly")
 
     args = parser.parse_args(args=args)
     return args
@@ -831,6 +833,9 @@ def none_as_string(v):
     else:
         return v
 
+def sanitize_metric(m):
+    return m.replace(".","_").replace("/","SLASH").replace(" ","_").replace(":","_")
+
 if __name__ == "__main__":
     args = _get_args(None)
 
@@ -865,6 +870,9 @@ if __name__ == "__main__":
             if args.format == "csv":
                 print(', '.join(OUTPUT_FIELD_NAMES))
                 line_format = "%s,%s,%s,%s,%s,%s,%s"
+            elif args.format == "statsd":
+                line_format = "%s.%s.%s.%s:%s|g"
+                
 
         for r in data["regions"]:
             region_name = r["region"]
@@ -872,10 +880,15 @@ if __name__ == "__main__":
                 for term in it["prices"]:
                     if args.format == "csv" or args.format == "line":
                         x.append(line_format % (region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront_perGB"])))
+                    elif args.format == "statsd":
+                        x.append(line_format % (args.statsd_prefix, sanitize_metric(region_name), term, sanitize_metric(it["type"]), none_as_string(it["prices"][term]["hourly"])))
                     else:
                         x.add_row([region_name, it["type"], it["os"], none_as_string(it["prices"][term]["hourly"]), it["utilization"], term, none_as_string(it["prices"][term]["upfront_perGB"])])
 
         if args.format == "csv" or args.format == "line":
             print("\n".join(x))
+        elif args.format == "statsd":
+            for metric in x:
+                print(metric)
         else:
             print(x)
