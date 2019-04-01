@@ -139,6 +139,7 @@ EC2_REGIONS = [
     "sa-east-1",
     "ap-south-1",
     "ca-central-1",
+    "eu-north-1",
     "eu-west-2",
     "ap-northeast-3",
     "eu-west-3"
@@ -267,7 +268,7 @@ JSON_NAME_TO_EC2_REGIONS_API = {
 
     "eu-ireland": "eu-west-1",
     "eu-west-1": "eu-west-1",
-
+    "eu-north-1": "eu-north-1",
     "eu-central-1": "eu-central-1",
 
     "apac-sin": "ap-southeast-1",
@@ -872,7 +873,7 @@ if __name__ == "__main__":
                 line_format = "%s,%s,%s,%s,%s,%s,%s"
             elif args.format == "statsd":
                 line_format = "%s.%s.%s.%s:%s|g"
-                
+
 
         for r in data["regions"]:
             region_name = r["region"]
