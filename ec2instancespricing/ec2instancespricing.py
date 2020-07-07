@@ -132,8 +132,10 @@ EC2_REGIONS = [
     "us-gov-east-1",
     "us-west-1",
     "us-west-2",
+    "us-west-2-lax-1a",
     "eu-west-1",
     "eu-central-1",
+    "eu-south-1",
     "ap-southeast-1",
     "ap-southeast-2",
     "ap-northeast-1",
@@ -146,6 +148,8 @@ EC2_REGIONS = [
     "eu-west-2",
     "ap-northeast-3",
     "eu-west-3",
+    "me-south-1",
+    "af-south-1",
 ]
 
 EC2_INSTANCE_TYPES_PATTERN = {
@@ -268,11 +272,13 @@ JSON_NAME_TO_EC2_REGIONS_API = {
     "us-west-1": "us-west-1",
 
     "us-west-2": "us-west-2",
+    "us-west-2-lax-1a": "us-west-2-lax-1a",
 
     "eu-ireland": "eu-west-1",
     "eu-west-1": "eu-west-1",
     "eu-north-1": "eu-north-1",
     "eu-central-1": "eu-central-1",
+    "eu-south-1": "eu-south-1",
 
     "apac-sin": "ap-southeast-1",
     "ap-southeast-1": "ap-southeast-1",
@@ -294,7 +300,9 @@ JSON_NAME_TO_EC2_REGIONS_API = {
     "ca-central-1" : "ca-central-1",
     "eu-west-2" : "eu-west-2",
     "ap-northeast-3": "ap-northeast-3",
-    "eu-west-3" : "eu-west-3"
+    "eu-west-3" : "eu-west-3",
+    "me-south-1": "me-south-1",
+    "af-south-1": "af-south-1"
 }
 
 EC2_REGIONS_API_TO_JSON_NAME = {
