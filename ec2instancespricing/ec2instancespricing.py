@@ -173,6 +173,11 @@ EC2_INSTANCE_TYPES_PATTERN = {
     "c*.2xlarge": "c\d\.2xlarge",
     "c*.4xlarge": "c\d\.4xlarge",
     "c*.8xlarge": "c\d\.8xlarge",
+
+    "p*.2xlarge": "c\d\.2xlarge",
+    "p*.8xlarge": "c\d\.8xlarge",
+    "p*.16xlarge": "c\d\.16xlarge",
+    "p3d*.24xlarge": "c\d\.24xlarge",
 }
 
 EC2_INSTANCE_TYPES = [
@@ -252,6 +257,15 @@ EC2_INSTANCE_TYPES = [
     "d2.8xlarge",
 
     "x1.32xlarge",
+
+    "p2.xlarge",
+    "p2.8xlarge",
+    "p2.16xlarge",
+
+    "p3.2xlarge",
+    "p3.8xlarge",
+    "p3.16xlarge",
+    "p3dn.24xlarge"
 ]
 
 EC2_OS_TYPES = [
