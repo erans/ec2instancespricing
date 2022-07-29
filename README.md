@@ -21,8 +21,8 @@ Data can be filtered by region, instance_type, instance_type_pattern and os_type
 Importing this file will allow you to use two functions:
 
 * get_ec2_ondemand_instances_prices - to get the pricing of On-Demand instances
-* get_ec2_reserved_instaces_prices - to get the pricing of reserved instances (in all utilization levels)
-* get_ec2_spot_instaces_prices - to get the pricing of spot instances
+* get_ec2_reserved_instances_prices - to get the pricing of reserved instances (in all utilization levels)
+* get_ec2_spot_instances_prices - to get the pricing of spot instances
 
 Running this file will activate its CLI interface in which you can get output to your console
 in a CSV, JSON, line and table formats (default is table).
