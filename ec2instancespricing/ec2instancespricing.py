@@ -138,6 +138,7 @@ EC2_REGIONS = [
     "eu-south-1",
     "ap-southeast-1",
     "ap-southeast-2",
+    "ap-southeast-3",
     "ap-northeast-1",
     "ap-northeast-2",
     "ap-east-1",
@@ -299,6 +300,7 @@ JSON_NAME_TO_EC2_REGIONS_API = {
     "ap-east-1": "ap-east-1",
 
     "ap-southeast-2": "ap-southeast-2",
+    "ap-southeast-3": "ap-southeast-3",
     "apac-syd": "ap-southeast-2",
 
     "apac-tokyo": "ap-northeast-1",
